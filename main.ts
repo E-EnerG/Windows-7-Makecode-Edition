@@ -1026,9 +1026,6 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, other
         }
     }
 })
-function windowsBoot () {
-    bootAnimation()
-}
 function lockScreen () {
     cursor.destroy()
     scene.setBackgroundImage(img`
@@ -1388,10 +1385,13 @@ function bootloader () {
         graphicsStatus = textsprite.create("Ready", 0, 7)
         graphicsStatus.setPosition(74, 81)
         pause(200)
-        windowsBoot()
+        windowsBootManager()
     } else {
     	
     }
+}
+function windowsBootManager () {
+    bootAnimation()
 }
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     if (allowBoot == 1) {

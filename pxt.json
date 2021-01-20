@@ -12,7 +12,8 @@
         "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.1.0",
         "Color Fading": "github:jwunderl/pxt-color#v0.2.0",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.0",
-        "arcade-text": "github:microsoft/arcade-text#v1.3.0"
+        "arcade-text": "github:microsoft/arcade-text#v1.3.0",
+        "arcade-shader": "github:riknoll/arcade-shader#master"
     },
     "files": [
         "main.blocks",
