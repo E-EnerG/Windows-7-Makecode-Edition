@@ -978,13 +978,59 @@ function bootAnimation () {
     microsoftText.destroy()
     startingWindowsText.destroy()
     windowsLogo.destroy()
-    pause(500)
+    cursor = sprites.create(img`
+        f f . . . . . . 
+        f 1 f . . . . . 
+        f 1 1 f . . . . 
+        f 1 1 1 f . . . 
+        f 1 1 1 1 f . . 
+        f 1 1 1 1 1 f . 
+        f 1 1 1 1 1 1 f 
+        f 1 1 1 1 f f f 
+        f 1 1 1 1 f . . 
+        f 1 f f 1 1 f . 
+        f f . . f 1 1 f 
+        . . . . f 1 1 f 
+        . . . . . f f . 
+        `, SpriteKind.Player)
+    controller.moveSprite(cursor, 100, 100)
+    pause(2000)
     lockScreen()
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, otherSprite) {
+    cursor.say("Enter password", 100)
+    if (pressCooldown == 0) {
+        if (controller.A.isPressed()) {
+            if (firstPasswordInput == 1) {
+            	
+            } else {
+                passwordText.destroy()
+            }
+            passwordInput = game.askForString("Enter Password", 4)
+            firstPasswordInput = 0
+            cursor.z = 100
+            passwordLength = passwordInput.length
+            if (passwordLength == 1) {
+                passwordText = textsprite.create(".", 0, 15)
+            } else if (passwordLength == 2) {
+                passwordText = textsprite.create("..", 0, 15)
+            } else if (passwordLength == 3) {
+                passwordText = textsprite.create("...", 0, 15)
+            } else {
+                passwordText = textsprite.create("....", 0, 15)
+            }
+            passwordText.setPosition(80, 84)
+            pressCooldown = 1
+            pause(750)
+            pressCooldown = 0
+        }
+    }
+})
 function windowsBoot () {
     bootAnimation()
 }
 function lockScreen () {
+    cursor.destroy()
     scene.setBackgroundImage(img`
         9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
         9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
@@ -1161,27 +1207,23 @@ function lockScreen () {
         `, SpriteKind.TextBar)
     passwordField.setPosition(80, 86)
     cursor = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . f f . . . . . . . . . . . 
-        . . . f 1 f . . . . . . . . . . 
-        . . . f 1 1 f . . . . . . . . . 
-        . . . f 1 1 1 f . . . . . . . . 
-        . . . f 1 1 1 1 f . . . . . . . 
-        . . . f 1 1 1 1 1 f . . . . . . 
-        . . . f 1 1 1 1 1 1 f . . . . . 
-        . . . f 1 1 1 1 f f f . . . . . 
-        . . . f 1 1 1 1 f . . . . . . . 
-        . . . f 1 f f 1 1 f . . . . . . 
-        . . . f f . . f 1 1 f . . . . . 
-        . . . . . . . f 1 1 f . . . . . 
-        . . . . . . . . f f . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
+        f f . . . . . . 
+        f 1 f . . . . . 
+        f 1 1 f . . . . 
+        f 1 1 1 f . . . 
+        f 1 1 1 1 f . . 
+        f 1 1 1 1 1 f . 
+        f 1 1 1 1 1 1 f 
+        f 1 1 1 1 f f f 
+        f 1 1 1 1 f . . 
+        f 1 f f 1 1 f . 
+        f f . . f 1 1 f 
+        . . . . f 1 1 f 
+        . . . . . f f . 
         `, SpriteKind.Player)
     controller.moveSprite(cursor, 100, 100)
-    if (cursor.overlapsWith(passwordField)) {
-        cursor.say("Enter password", 500)
-    }
+    cursor.setFlag(SpriteFlag.StayInScreen, true)
+    firstPasswordInput = 1
 }
 function bootloader () {
     if (bootSuccess == 1) {
@@ -1354,14 +1396,19 @@ function bootloader () {
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     if (allowBoot == 1) {
         power2 = 1
-        lockScreen()
+        bootloader()
     }
 })
 let allowBoot = 0
-let cursor: Sprite = null
 let passwordField: Sprite = null
 let windowsText: TextSprite = null
 let userIcon: Sprite = null
+let passwordLength = 0
+let passwordInput = ""
+let passwordText: Sprite = null
+let firstPasswordInput = 0
+let pressCooldown = 0
+let cursor: Sprite = null
 let windowsLogo: Sprite = null
 let startingWindowsText: TextSprite = null
 let microsoftText: TextSprite = null
