@@ -1002,24 +1002,31 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, other
     if (pressCooldown == 0) {
         if (controller.A.isPressed()) {
             if (firstPasswordInput == 1) {
-            	
+                passwordInput = game.askForString("Enter Password", 4)
+                if (passwordInput.isEmpty()) {
+                    passwordLength = 0
+                    passwordText = textsprite.create("", 0, 0)
+                } else {
+                    cursor.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(80, 84)
+                    firstPasswordInput = 0
+                }
             } else {
                 passwordText.destroy()
+                passwordInput = game.askForString("Enter Password", 4)
+                if (passwordInput.isEmpty()) {
+                    passwordLength = 0
+                    textSprite = textsprite.create("", 0, 0)
+                } else {
+                    passwordText.destroy()
+                    cursor.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(80, 84)
+                }
             }
-            passwordInput = game.askForString("Enter Password", 4)
-            firstPasswordInput = 0
-            cursor.z = 100
-            passwordLength = passwordInput.length
-            if (passwordLength == 1) {
-                passwordText = textsprite.create(".", 0, 15)
-            } else if (passwordLength == 2) {
-                passwordText = textsprite.create("..", 0, 15)
-            } else if (passwordLength == 3) {
-                passwordText = textsprite.create("...", 0, 15)
-            } else {
-                passwordText = textsprite.create("....", 0, 15)
-            }
-            passwordText.setPosition(80, 84)
             pressCooldown = 1
             pause(750)
             pressCooldown = 0
@@ -1221,6 +1228,7 @@ function lockScreen () {
     controller.moveSprite(cursor, 100, 100)
     cursor.setFlag(SpriteFlag.StayInScreen, true)
     firstPasswordInput = 1
+    pressCooldown = 0
 }
 function bootloader () {
     if (bootSuccess == 1) {
@@ -1348,6 +1356,7 @@ function bootloader () {
             `)
         makeBootText = textsprite.create("MakeBOOT", 0, 1)
         makeBootText.setPosition(45, 14)
+        pause(500)
         controllerText = textsprite.create("Controller:", 0, 1)
         controllerText.setPosition(37, 29)
         graphicsText = textsprite.create("Graphics:", 0, 1)
@@ -1403,9 +1412,10 @@ let allowBoot = 0
 let passwordField: Sprite = null
 let windowsText: TextSprite = null
 let userIcon: Sprite = null
+let textSprite: TextSprite = null
+let passwordText: Sprite = null
 let passwordLength = 0
 let passwordInput = ""
-let passwordText: Sprite = null
 let firstPasswordInput = 0
 let pressCooldown = 0
 let cursor: Sprite = null
