@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const Icon = SpriteKind.create()
     export const TextBar = SpriteKind.create()
+    export const Button = SpriteKind.create()
 }
 function bootAnimation () {
     makeBootText.destroy()
@@ -979,19 +980,19 @@ function bootAnimation () {
     startingWindowsText.destroy()
     windowsLogo.destroy()
     cursor = sprites.create(img`
-        f f . . . . . . 
-        f 1 f . . . . . 
-        f 1 1 f . . . . 
-        f 1 1 1 f . . . 
-        f 1 1 1 1 f . . 
-        f 1 1 1 1 1 f . 
-        f 1 1 1 1 1 1 f 
-        f 1 1 1 1 f f f 
-        f 1 1 1 1 f . . 
-        f 1 f f 1 1 f . 
-        f f . . f 1 1 f 
-        . . . . f 1 1 f 
-        . . . . . f f . 
+        c c . . . . . . 
+        c 1 c . . . . . 
+        c 1 1 c . . . . 
+        c 1 1 1 c . . . 
+        c 1 1 1 1 c . . 
+        c 1 1 1 1 1 c . 
+        c 1 1 1 1 1 1 c 
+        c 1 1 1 1 c c c 
+        c 1 1 1 1 c . . 
+        c 1 c c 1 1 c . 
+        c c . . c 1 1 c 
+        . . . . c 1 1 c 
+        . . . . . c c . 
         `, SpriteKind.Player)
     controller.moveSprite(cursor, 100, 100)
     pause(2000)
@@ -1010,7 +1011,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, other
                     cursor.z = 100
                     passwordLength = passwordInput.length
                     passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(80, 84)
+                    passwordText.setPosition(80, 86)
                     firstPasswordInput = 0
                 }
             } else {
@@ -1024,7 +1025,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, other
                     cursor.z = 100
                     passwordLength = passwordInput.length
                     passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(80, 84)
+                    passwordText.setPosition(80, 86)
                 }
             }
             pressCooldown = 1
@@ -1163,32 +1164,32 @@ function lockScreen () {
         d96666666666666666666666666666666661
         d66666666666666666666666666666666661
         d66111111111111111111111111111111661
-        166166666666666666666666666666661661
-        166166666666666666666666666666661661
-        166166666666666666666666666666661661
-        166166666666666666666666666666661661
-        166166666666666666666666666666661661
-        166166666666666eeeeeeee6666666661661
-        1661666666666eeeeeeeeeee666666661661
-        166166666666eeeeeeeeeeeee66666661661
-        16616666666eeeeeeeeeeeeee66666661661
-        1661666666eeeeeeeeeeeeeeee6666661661
-        1661666666eeeeedeeeeeeeeee6666661661
-        1661666666eeeddddeedeedeeee666661661
-        1661666666eeedddddeddddddee666661661
-        1661666666eedddddddddddddee666661661
-        1661666666eedddddddddddddfe66666166d
-        1661666666efdddddddddddddf666666166d
-        166166666666fdddddddddddf6666666d66d
-        166166666666fdddddddddddf6666666d66d
-        1661666666666ffdddddddff66666666d66d
-        166166666666666fffffff6666666666d66d
-        16616666666668888776888866666666d66d
-        16616666666687787777686686666666d66b
-        16616666666687877777768686666666d66b
-        16616666666687877777768686666666b66b
-        16616666666687877777768686666666b66b
-        16616666666687877777768686666666b66b
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        166199999999999999999999999999991661
+        1661999999999999999999999999999c1661
+        166199999999999999999999999999cd1661
+        16619999999999999999999999999c1d1661
+        16619999999999999999999999999cdd1661
+        16619999999999999999999999999cdd1661
+        1661999999999999999999999999cdbd1661
+        166199999999999999999999ccccdbbd166d
+        166199999999999cccccccccc1ddddbb166d
+        1661999999999cc11dddbbbbbddbbddbd66d
+        1661999cccccccdddddddbbbbdbddddbd66d
+        166199c1dddbbddbbddddddbbdbddddbd66d
+        16619cdddbddbdbddddbbdddbddddddbd66d
+        1661cddddbdddbdddddbddddbdddbddbd66d
+        1661dddddddddbddbdbdddddbddbdddcd66b
+        1661ddbbdddddcdbddbddddbcddddddcd66b
+        1661dbddddddccdbdddddbdcdddddddcb66b
+        1661ddddddddccddddddbddcdddddddcb66b
+        1661dddddddccdddddddddccddddddccb66b
         1661111111111111111111dddddddbbbb66b
         16666666666666666666666666666666666b
         16666666666666666666666666666666666b
@@ -1210,6 +1211,8 @@ function lockScreen () {
         .111111111111111111ddddddbbbbbb.
         `, SpriteKind.TextBar)
     passwordField.setPosition(80, 86)
+    logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Button)
+    logInButton.setPosition(104, 87)
     cursor = sprites.create(img`
         f f . . . . . . 
         f 1 f . . . . . 
@@ -1409,6 +1412,7 @@ controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 let allowBoot = 0
+let logInButton: Sprite = null
 let passwordField: Sprite = null
 let windowsText: TextSprite = null
 let userIcon: Sprite = null
