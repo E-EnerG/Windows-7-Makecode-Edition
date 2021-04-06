@@ -2,6 +2,8 @@ namespace SpriteKind {
     export const Icon = SpriteKind.create()
     export const TextBar = SpriteKind.create()
     export const Button = SpriteKind.create()
+    export const Password_Textbox = SpriteKind.create()
+    export const Password_Button = SpriteKind.create()
 }
 function bootAnimation () {
     makeBootText.destroy()
@@ -994,39 +996,24 @@ function bootAnimation () {
         . . . . c 1 1 c 
         . . . . . c c . 
         `, SpriteKind.Player)
+    cursor.setStayInScreen(true)
     controller.moveSprite(cursor, 100, 100)
     pause(2000)
+    cursorPosX = cursor.x
+    cursorPosY = cursor.y
     lockScreen()
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.TextBar, function (sprite, otherSprite) {
-    cursor.say("Enter password", 100)
+function desktop () {
+	
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Button, function (sprite, otherSprite) {
+    cursor.say("Enter", 100)
     if (pressCooldown == 0) {
         if (controller.A.isPressed()) {
-            if (firstPasswordInput == 1) {
-                passwordInput = game.askForString("Enter Password", 4)
-                if (passwordInput.isEmpty()) {
-                    passwordLength = 0
-                    passwordText = textsprite.create("", 0, 0)
-                } else {
-                    cursor.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(80, 86)
-                    firstPasswordInput = 0
-                }
+            if (passwordInput == password) {
+                desktop()
             } else {
-                passwordText.destroy()
-                passwordInput = game.askForString("Enter Password", 4)
-                if (passwordInput.isEmpty()) {
-                    passwordLength = 0
-                    textSprite = textsprite.create("", 0, 0)
-                } else {
-                    passwordText.destroy()
-                    cursor.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(80, 86)
-                }
+                passwordErrorText = textsprite.create("Password incorrect", 0, 2)
             }
             pressCooldown = 1
             pause(750)
@@ -1209,9 +1196,9 @@ function lockScreen () {
         1666666666666666666666666666666b
         1666666666666666666666666666666b
         .111111111111111111ddddddbbbbbb.
-        `, SpriteKind.TextBar)
+        `, SpriteKind.Password_Textbox)
     passwordField.setPosition(80, 86)
-    logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Button)
+    logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Password_Button)
     logInButton.setPosition(104, 87)
     cursor = sprites.create(img`
         f f . . . . . . 
@@ -1228,6 +1215,7 @@ function lockScreen () {
         . . . . f 1 1 f 
         . . . . . f f . 
         `, SpriteKind.Player)
+    cursor.setPosition(cursorPosX, cursorPosY)
     controller.moveSprite(cursor, 100, 100)
     cursor.setFlag(SpriteFlag.StayInScreen, true)
     firstPasswordInput = 1
@@ -1411,17 +1399,61 @@ controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
         bootloader()
     }
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Textbox, function (sprite, otherSprite) {
+    cursor.say("Enter password", 100)
+    if (pressCooldown == 0) {
+        if (controller.A.isPressed()) {
+            if (firstPasswordInput == 1) {
+                passwordInput = game.askForString("Enter Password", 4)
+                if (passwordInput.isEmpty()) {
+                    passwordLength = 0
+                    passwordText = textsprite.create("", 0, 0)
+                } else {
+                    cursor.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(80, 86)
+                    firstPasswordInput = 0
+                }
+            } else {
+                passwordText.destroy()
+                passwordInput = game.askForString("Enter Password", 4)
+                if (passwordInput.isEmpty()) {
+                    passwordLength = 0
+                    textSprite = textsprite.create("", 0, 0)
+                } else {
+                    passwordText.destroy()
+                    cursor.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(80, 86)
+                }
+            }
+            pressCooldown = 1
+            pause(750)
+            pressCooldown = 0
+            if (passwordInput == password) {
+                desktop()
+            } else {
+                passwordErrorText = textsprite.create("Password incorrect", 0, 2)
+            }
+        }
+    }
+})
+let textSprite: TextSprite = null
+let passwordText: Sprite = null
+let passwordLength = 0
 let allowBoot = 0
+let firstPasswordInput = 0
 let logInButton: Sprite = null
 let passwordField: Sprite = null
 let windowsText: TextSprite = null
 let userIcon: Sprite = null
-let textSprite: TextSprite = null
-let passwordText: Sprite = null
-let passwordLength = 0
+let passwordErrorText: TextSprite = null
 let passwordInput = ""
-let firstPasswordInput = 0
 let pressCooldown = 0
+let cursorPosY = 0
+let cursorPosX = 0
 let cursor: Sprite = null
 let windowsLogo: Sprite = null
 let startingWindowsText: TextSprite = null
@@ -1434,6 +1466,7 @@ let makeBootText: Sprite = null
 let bootSuccess = 0
 let gDriversBootTime = 0
 let cDriversBootTime = 0
+let password = ""
 let power2 = 0
 power2 = 0
 scene.setBackgroundImage(img`
@@ -1558,6 +1591,7 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     `)
+password = "1234"
 let cDrivers = 1
 let gDrivers = 1
 if ((cDrivers && gDrivers) == 0) {
