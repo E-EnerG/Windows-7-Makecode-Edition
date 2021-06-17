@@ -1,5 +1,5 @@
 {
-    "name": "Windows 7 v1.0",
+    "name": "WindOS Build 2101_v0.3.1",
     "description": "",
     "dependencies": {
         "device": "*",
@@ -28,7 +28,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.4.35",
+        "target": "1.4.44",
         "targetId": "arcade"
     },
     "supportedTargets": [
