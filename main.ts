@@ -160,7 +160,7 @@ function bootAnimation () {
         . f f f d d b b f f f f . . . . . 
         . . . . f f f f . . . . . . . . . 
         `, SpriteKind.Icon)
-    animationInterval = randint(95, 215)
+    animationInterval = randint(95, 120)
     animation.runImageAnimation(
     windowsLogo,
     [img`
@@ -547,7 +547,7 @@ function bootAnimation () {
     animationInterval,
     false
     )
-    pause(3000)
+    pause(animationInterval * 20 + randint(1300, 2400))
     animation.runImageAnimation(
     windowsLogo,
     [img`
@@ -1144,7 +1144,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Textbox, function (spri
         if (controller.A.isPressed()) {
             if (firstPasswordInput == 1) {
                 passwordInput = game.askForString("Enter Password", 4)
-                if (passwordInput.isEmpty() || passwordInput.includes(" ")) {
+                cursorPosX = cursor.x
+                cursorPosY = cursor.y
+                if (passwordInput.isEmpty() || passwordInput == "    ") {
                     passwordLength = 0
                     passwordText = textsprite.create("", 0, 0)
                 } else {
@@ -1157,6 +1159,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Textbox, function (spri
             } else {
                 passwordText.destroy()
                 passwordInput = game.askForString("Enter Password", 4)
+                cursorPosX = cursor.x
+                cursorPosY = cursor.y
                 if (passwordInput.isEmpty()) {
                     passwordLength = 0
                     textSprite = textsprite.create("", 0, 0)
@@ -1179,6 +1183,24 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Textbox, function (spri
                 logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
                 logInButton.setPosition(104, 87)
                 logInButton.z = 0
+                cursor.destroy()
+                cursor = sprites.create(img`
+                    f f . . . . . . 
+                    f 1 f . . . . . 
+                    f 1 1 f . . . . 
+                    f 1 1 1 f . . . 
+                    f 1 1 1 1 f . . 
+                    f 1 1 1 1 1 f . 
+                    f 1 1 1 1 1 1 f 
+                    f 1 1 1 1 f f f 
+                    f 1 1 1 1 f . . 
+                    f 1 f f 1 1 f . 
+                    f f . . f 1 1 f 
+                    . . . . f 1 1 f 
+                    . . . . . f f . 
+                    `, SpriteKind.Player)
+                cursor.setPosition(cursorPosX, cursorPosY)
+                controller.moveSprite(cursor)
             }
             pressCooldown = 1
             pause(750)
@@ -1800,6 +1822,7 @@ function passwordLoadingScreen () {
         loadingCircle.destroy()
         passwordErrorText = textsprite.create("Password incorrect", 0, 2)
         passwordErrorText.setPosition(80, 23)
+        passwordEntered = 0
         lockScreen()
     }
 }
