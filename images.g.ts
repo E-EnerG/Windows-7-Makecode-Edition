@@ -3,20 +3,6 @@ namespace myImages {
 
     helpers._registerFactory("image", function(name: string) {
         switch(helpers.stringTrim(name)) {
-            case "image11":
-            case "myImage0":return img`
-. . 1 1 1 1 1 1 1 . . 
-. 1 6 6 6 6 6 6 6 1 . 
-1 6 6 6 6 6 6 6 6 6 1 
-1 6 6 6 6 6 1 6 6 6 1 
-1 6 1 6 6 6 1 1 6 6 d 
-1 6 1 1 1 1 1 1 d 6 d 
-1 6 d 6 6 6 1 d 6 6 d 
-1 6 6 6 6 6 d 6 6 6 b 
-1 6 6 6 6 6 6 6 6 6 b 
-. 1 6 6 6 6 6 6 6 b . 
-. . 1 d d d b b b . . 
-`;
             case "image10":
             case "myImage1":return img`
 . . . . . . . . . . . 
@@ -31,20 +17,6 @@ namespace myImages {
 . . . . . . . . . . . 
 . . . . . . . . . . . 
 `;
-            case "image12":
-            case "myImage2":return img`
-. . d d d d d d d . . 
-. d 8 8 8 8 8 8 8 d . 
-d 8 8 8 8 8 8 8 8 8 d 
-d 8 8 8 8 8 d 8 8 8 d 
-d 8 d 8 8 8 d d 8 8 b 
-d 8 d d d d d d b 8 b 
-d 8 b 8 8 8 d b 8 8 b 
-d 8 8 8 8 8 b 8 8 8 c 
-d 8 8 8 8 8 8 8 8 8 c 
-. d 8 8 8 8 8 8 8 c . 
-. . d b b b c c c . . 
-`;
             case "image1":
             case "bg_0":return img`
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -55,14 +27,14 @@ ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffff11111111111111ddddffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1ffffffffffffffffffdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1f1111ff11ff11f1f1fdfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1f1f1f1f11f1f1f1f1fbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1f1f1f1f1ff1f1f1f1fbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1f1f1f1f11f1f1f111fbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-fffffffffffffffffffffffffffffffffffffffff1ffffffffffffffffffbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffffffffffffff111111dddddddbbbbbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffff111111111dddddbbbbbbbbfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1ffffffffffffffffffffffbffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1f11f1fff11ff111ff1ff1fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1f1f1f1f1f11f1ff1f1ff1fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1f1f1f1f11fff1ff1f1ff1fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1f1fff1ff111f1ff1ff111fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+ffffffffffffffffffffffffffffffffffffffffff1ffffffffffffffffffffffcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffff111ddddddbbbbbbcccccccfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -167,6 +139,44 @@ ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+`;
+            case "image12":
+            case "myImage2":return img`
+f f f f f f f f f f f f f f f f 
+f 9 9 9 9 9 6 6 6 6 6 6 6 8 8 f 
+f 9 f f f f f f f f f f f f 8 f 
+f 9 f 6 6 6 6 6 6 6 6 6 6 f 8 f 
+f 6 f 6 6 8 8 8 8 6 6 6 6 f 8 f 
+f 6 f 6 6 6 8 8 8 8 6 6 6 f c f 
+f 6 f 6 6 6 6 8 8 8 c 6 6 f c f 
+f 8 f 6 6 6 6 8 8 8 c 6 6 f c f 
+f 8 f 6 6 6 8 8 8 c 6 6 6 f c f 
+f 8 f 6 6 c c c c 6 6 6 6 f c f 
+f 8 f 6 6 6 6 6 6 6 6 6 6 f c f 
+f 8 f f f f f f f f f f f f c f 
+f 8 f f f f f f f f f f f f c f 
+f 8 8 c c c c c c c c c c c c f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
+`;
+            case "image11":
+            case "myImage0":return img`
+f f f f f f f f f f f f f f f f 
+f 1 1 1 1 1 9 9 9 9 9 9 9 6 6 f 
+f 1 f f f f f f f f f f f f 6 f 
+f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
+f 9 f 9 9 6 6 6 6 9 9 9 9 f 6 f 
+f 9 f 9 9 9 6 6 6 6 9 9 9 f 8 f 
+f 9 f 9 9 9 9 6 6 6 8 9 9 f 8 f 
+f 6 f 9 9 9 9 6 6 6 8 9 9 f 8 f 
+f 6 f 9 9 9 6 6 6 8 9 9 9 f 8 f 
+f 6 f 9 9 8 8 8 8 9 9 9 9 f 8 f 
+f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
+f 6 f f f f f f f f f f f f 8 f 
+f 6 f f f f f f f f f f f f 8 f 
+f 6 6 8 8 8 8 8 8 8 8 8 8 8 8 f 
+f f f f f f f f f f f f f f f f 
+f f f f f f f f f f f f f f f f 
 `;
         }
         return null;
