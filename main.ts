@@ -7,6 +7,8 @@ namespace SpriteKind {
     export const Loading_Animation = SpriteKind.create()
     export const Shutdown_Button = SpriteKind.create()
     export const SwitchUser_Button = SpriteKind.create()
+    export const Cursor = SpriteKind.create()
+    export const Cursor_bottom = SpriteKind.create()
 }
 function bootAnimation () {
     startupKeyText.destroy()
@@ -594,47 +596,33 @@ function bootAnimation () {
     microsoftText.destroy()
     startingWindowsText.destroy()
     windowsLogo.destroy()
-    cursor = sprites.create(img`
-        c c . . . . . . 
-        c 1 c . . . . . 
-        c 1 1 c . . . . 
-        c 1 1 1 c . . . 
-        c 1 1 1 1 c . . 
-        c 1 1 1 1 1 c . 
-        c 1 1 1 1 1 1 c 
-        c 1 1 1 1 c c c 
-        c 1 1 1 1 c . . 
-        c 1 c c 1 1 c . 
-        c c . . c 1 1 c 
-        . . . . c 1 1 c 
-        . . . . . c c . 
+    cursorTop = sprites.create(img`
+        . . 1 1 1 9 9 9 . . . . 
+        . 1 f f f f f f 9 . . . 
+        1 f 1 1 1 9 9 6 f 9 . . 
+        1 f 1 f f f 6 6 f 9 . . 
+        9 f 1 f f 6 f f 6 . . . 
+        9 f 9 f 6 f 6 f 6 . . . 
+        6 f 9 6 f 6 f 8 f 8 . . 
+        6 f 6 6 f f 8 f 8 f 8 . 
+        . 6 f f 6 6 f 8 f 8 f 8 
+        . . 6 6 . . 8 f 8 8 f 8 
+        . . . . . . . 8 f f 8 . 
+        . . . . . . . . 8 8 . . 
         `, SpriteKind.Player)
-    cursor.setStayInScreen(true)
-    controller.moveSprite(cursor, 100, 100)
+    cursorTop.setStayInScreen(true)
+    controller.moveSprite(cursorTop, 100, 100)
     pause(2000)
-    cursorPosX = cursor.x
-    cursorPosY = cursor.y
+    cursorPosX = cursorTop.x
+    cursorPosY = cursorTop.y
     lockScreen()
 }
 function desktop () {
 	
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Button, function (sprite, otherSprite) {
-    if (passwordEntered == 1 && passwordLength >= requiredPasswordLength) {
-        cursor.say("Continue", 100)
-        if (pressCooldown == 0) {
-            if (controller.A.isPressed()) {
-                passwordLoadingScreen()
-                pressCooldown = 1
-                pause(750)
-                pressCooldown = 0
-            }
-        }
-    }
-})
 function lockScreen () {
     console.logValue("pass", user1Password)
-    cursor.destroy()
+    cursorTop.destroy()
     scene.setBackgroundImage(img`
         9999999999999999bbbbbb66666666b777777777777777777777777777777777777d7669999999999999999999999999bbbbbb66666666b777777777777777777777777777777777777d766999999999
         999999999999999997bbbbbbbbbbbbb7777777777777777777777777777777777777666999999999999999999999999997bbbbbbbbbbbbb7777777777777777777777777777777777777666999999999
@@ -816,9 +804,9 @@ function lockScreen () {
         ffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffff
         `, SpriteKind.Password_Textbox)
-    passwordField.setPosition(72, 86)
+    passwordField.setPosition(80, 86)
     logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
-    logInButton.setPosition(103, 86)
+    logInButton.setPosition(88, 86)
     su_user1Box = sprites.create(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         f1111111111111111111199999999999999996666666666666666666666f
@@ -872,12 +860,12 @@ function lockScreen () {
         f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
         f 1 f f f f f f f f f f f f 6 f 
         f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
-        f 9 f 9 9 9 6 6 6 6 9 9 9 f 8 f 
-        f 9 f 9 9 9 6 1 1 6 9 9 9 f 8 f 
-        f 6 f 9 9 9 6 1 1 6 9 9 9 f 8 f 
-        f 6 f 9 9 9 6 1 1 6 9 9 9 f 8 f 
-        f 6 f 9 9 9 6 6 6 6 9 9 9 f 8 f 
-        f 6 f 9 9 9 6 6 6 6 9 9 9 f 8 f 
+        f 9 f 9 9 9 f f f f 9 9 9 f 8 f 
+        f 9 f 9 9 9 f 1 9 f 9 9 9 f 8 f 
+        f 6 f 9 9 9 f 9 6 f 9 9 9 f 8 f 
+        f 6 f 9 9 9 f 6 8 f 9 9 9 f 8 f 
+        f 6 f 9 9 9 f 8 8 f 9 9 9 f 8 f 
+        f 6 f 9 9 9 f f f f 9 9 9 f 8 f 
         f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
         f 6 f f f f f f f f f f f f 8 f 
         f 6 f f f f f f f f f f f f 8 f 
@@ -885,35 +873,18 @@ function lockScreen () {
         f f f f f f f f f f f f f f f f 
         f f f f f f f f f f f f f f f f 
         `, SpriteKind.Shutdown_Button)
-    accesibilityButton = sprites.create(img`
-        f f f f f f f f f f f f f f f f 
-        f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
-        f 1 f f f f f f f f f f f f 6 f 
-        f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
-        f 9 f 9 6 6 6 9 9 9 9 9 9 f 8 f 
-        f 9 f 9 6 1 6 9 6 6 9 9 9 f 8 f 
-        f 6 f 9 6 1 6 6 6 1 6 9 9 f 8 f 
-        f 6 f 9 6 1 1 1 1 1 1 6 9 f 8 f 
-        f 6 f 9 6 6 6 6 6 1 6 9 9 f 8 f 
-        f 6 f 9 9 9 9 9 6 6 9 9 9 f 8 f 
-        f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
-        f 6 f f f f f f f f f f f f 8 f 
-        f 6 f f f f f f f f f f f f 8 f 
-        f 6 6 6 6 8 8 8 8 8 8 8 8 8 8 f 
-        f f f f f f f f f f f f f f f f 
-        f f f f f f f f f f f f f f f f 
-        `, SpriteKind.Button)
+    shutdownButton.setPosition(152, 112)
     networkButton = sprites.create(img`
         f f f f f f f f f f f f f f f f 
         f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
         f 1 f f f f f f f f f f f f 6 f 
         f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
-        f 9 f 9 9 6 6 9 9 6 6 9 9 f 8 f 
-        f 9 f 9 6 1 6 1 1 6 1 6 9 f 8 f 
-        f 6 f 9 6 6 1 6 6 1 6 6 9 f 8 f 
-        f 6 f 9 6 6 1 6 6 1 6 6 9 f 8 f 
-        f 6 f 9 6 1 6 1 1 6 1 6 9 f 8 f 
-        f 6 f 9 9 6 6 9 9 6 6 9 9 f 8 f 
+        f 9 f 9 9 f f 9 9 f f 9 9 f 8 f 
+        f 9 f 9 f 1 f 9 9 f 9 f 9 f 8 f 
+        f 6 f 9 f 8 9 f f 9 8 f 9 f 8 f 
+        f 6 f 9 f 8 6 f f 6 8 f 9 f 8 f 
+        f 6 f 9 f 6 f 9 9 f 6 f 9 f 8 f 
+        f 6 f 9 9 f f 9 9 f f 9 9 f 8 f 
         f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
         f 6 f f f f f f f f f f f f 8 f 
         f 6 f f f f f f f f f f f f 8 f 
@@ -921,24 +892,45 @@ function lockScreen () {
         f f f f f f f f f f f f f f f f 
         f f f f f f f f f f f f f f f f 
         `, SpriteKind.Button)
-    cursor = sprites.create(img`
-        f f . . . . . . 
-        f 1 f . . . . . 
-        f 1 1 f . . . . 
-        f 1 1 1 f . . . 
-        f 1 1 1 1 f . . 
-        f 1 1 1 1 1 f . 
-        f 1 1 1 1 1 1 f 
-        f 1 1 1 1 f f f 
-        f 1 1 1 1 f . . 
-        f 1 f f 1 1 f . 
-        f f . . f 1 1 f 
-        . . . . f 1 1 f 
-        . . . . . f f . 
-        `, SpriteKind.Player)
-    cursor.setPosition(cursorPosX, cursorPosY)
-    controller.moveSprite(cursor, 100, 100)
-    cursor.setFlag(SpriteFlag.StayInScreen, true)
+    networkButton.setPosition(137, 112)
+    soundMixerButton = sprites.create(img`
+        f f f f f f f f f f f f f f f f 
+        f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
+        f 1 f f f f f f f f f f f f 6 f 
+        f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
+        f 9 f 9 9 9 f f 9 f f 9 9 f 8 f 
+        f 9 f 9 9 f 1 f 9 1 1 f 9 f 8 f 
+        f 6 f 9 f 9 9 f 9 f 9 f 9 f 8 f 
+        f 6 f 9 f 6 6 f 9 f 6 f 9 f 8 f 
+        f 6 f 9 9 f 8 f 9 8 8 f 9 f 8 f 
+        f 6 f 9 9 9 f f 9 f f 9 9 f 8 f 
+        f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
+        f 6 f f f f f f f f f f f f 8 f 
+        f 6 f f f f f f f f f f f f 8 f 
+        f 6 6 6 6 8 8 8 8 8 8 8 8 8 8 f 
+        f f f f f f f f f f f f f f f f 
+        f f f f f f f f f f f f f f f f 
+        `, SpriteKind.Button)
+    soundMixerButton.setPosition(122, 112)
+    cursorTop = sprites.create(img`
+        . f f f f f f . . . 
+        f 1 1 1 9 9 6 f . . 
+        f 1 f f f 6 6 f . . 
+        f 1 f f 6 f f . . . 
+        f 9 f 6 f 6 f . . . 
+        f 9 6 f 6 . . . . . 
+        f 6 6 f f . . . . . 
+        . f f . . . . . . . 
+        . . . . . . . . . . 
+        . . . . . . . . . . 
+        `, SpriteKind.Cursor)
+    cursorTop.setPosition(cursorPosX, cursorPosY)
+    cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+    controller.moveSprite(cursorTop, 100, 100)
+    controller.moveSprite(cursorBottom, 100, 100)
+    cursorTop.setFlag(SpriteFlag.StayInScreen, true)
+    cursorBottom.setFlag(SpriteFlag.StayInScreen, true)
+    cursorBottom.setPosition(cursorTop.x, cursorTop.y)
     firstPasswordInput = 1
     pressCooldown = 0
 }
@@ -1115,11 +1107,81 @@ function bootloader () {
 function windowsBootManager () {
     bootAnimation()
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.SwitchUser_Button, function (sprite, otherSprite) {
+sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (sprite, otherSprite) {
+    cursorTop.say("Enter password", 100)
+    if (pressCooldown == 0) {
+        if (controller.A.isPressed()) {
+            if (firstPasswordInput == 1) {
+                passwordInput = game.askForString("Enter Password", 6)
+                cursorPosX = cursorTop.x
+                cursorPosY = cursorTop.y
+                if (passwordInput.isEmpty() || passwordInput == "    ") {
+                    passwordLength = 0
+                    passwordText = textsprite.create("", 0, 0)
+                } else {
+                    cursorTop.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(72, 85)
+                    firstPasswordInput = 0
+                }
+            } else {
+                passwordText.destroy()
+                passwordInput = game.askForString("Enter Password", 6)
+                cursorPosX = cursorTop.x
+                cursorPosY = cursorTop.y
+                if (passwordInput.isEmpty()) {
+                    passwordLength = 0
+                    textSprite = textsprite.create("", 0, 0)
+                } else {
+                    passwordText.destroy()
+                    cursorTop.z = 100
+                    passwordLength = passwordInput.length
+                    passwordText = textsprite.create(passwordInput, 0, 1)
+                    passwordText.setPosition(72, 85)
+                }
+            }
+            if (passwordLength >= requiredPasswordLength) {
+                passwordEntered = 1
+                logInButton.destroy()
+                logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Password_Button)
+                logInButton.setPosition(103, 86)
+                cursorTop.say("Continue", 100)
+            } else {
+                logInButton.destroy()
+                logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
+                logInButton.setPosition(103, 86)
+                logInButton.z = 0
+                cursorTop.destroy()
+                cursorTop = sprites.create(img`
+                    . . 1 1 1 9 9 9 . . . . 
+                    . 1 f f f f f f 9 . . . 
+                    1 f 1 1 1 9 9 6 f 9 . . 
+                    1 f 1 f f f 6 6 f 9 . . 
+                    9 f 1 f f 6 f f 6 . . . 
+                    9 f 9 f 6 f 6 f 6 . . . 
+                    6 f 9 6 f 6 f 8 f 8 . . 
+                    6 f 6 6 f f 8 f 8 f 8 . 
+                    . 6 f f 6 6 f 8 f 8 f 8 
+                    . . 6 6 . . 8 f 8 8 f 8 
+                    . . . . . . . 8 f f 8 . 
+                    . . . . . . . . 8 8 . . 
+                    `, SpriteKind.Player)
+                cursorTop.setPosition(cursorPosX, cursorPosY)
+                controller.moveSprite(cursorTop)
+            }
+            pressCooldown = 1
+            pause(750)
+            pressCooldown = 0
+        }
+    }
+})
+sprites.onOverlap(SpriteKind.Cursor, SpriteKind.SwitchUser_Button, function (sprite, otherSprite) {
     if (otherSprite == su_user1Box) {
-        cursor.say(user1Name, 100)
+        cursorTop.say(user1Name, 100)
         if (pressCooldown == 0) {
             if (controller.A.isPressed()) {
+                currentUser = 1
                 su_user1Box.setImage(img`
                     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                     f1111111111111111111199999999999999996666666666666666666666f
@@ -1164,14 +1226,16 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SwitchUser_Button, function (spr
                     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                     `)
+                usernameText.setText(user1Name)
                 pressCooldown = 1
                 pause(750)
                 pressCooldown = 0
             }
         }
     } else if (otherSprite == su_user2Box) {
-        cursor.say(user2Name, 100)
+        cursorTop.say(user2Name, 100)
         if (controller.A.isPressed()) {
+            currentUser = 2
             su_user2Box.setImage(img`
                 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                 f1111111111111111111199999999999999996666666666666666666666f
@@ -1216,6 +1280,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SwitchUser_Button, function (spr
                 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
                 `)
+            usernameText.setText(user2Name)
             pressCooldown = 1
             pause(750)
             pressCooldown = 0
@@ -1228,78 +1293,9 @@ controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
         windowsBootManager()
     }
 })
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Password_Textbox, function (sprite, otherSprite) {
-    cursor.say("Enter password", 100)
-    if (pressCooldown == 0) {
-        if (controller.A.isPressed()) {
-            if (firstPasswordInput == 1) {
-                passwordInput = game.askForString("Enter Password", 4)
-                cursorPosX = cursor.x
-                cursorPosY = cursor.y
-                if (passwordInput.isEmpty() || passwordInput == "    ") {
-                    passwordLength = 0
-                    passwordText = textsprite.create("", 0, 0)
-                } else {
-                    cursor.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(72, 85)
-                    firstPasswordInput = 0
-                }
-            } else {
-                passwordText.destroy()
-                passwordInput = game.askForString("Enter Password", 4)
-                cursorPosX = cursor.x
-                cursorPosY = cursor.y
-                if (passwordInput.isEmpty()) {
-                    passwordLength = 0
-                    textSprite = textsprite.create("", 0, 0)
-                } else {
-                    passwordText.destroy()
-                    cursor.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(72, 85)
-                }
-            }
-            if (passwordLength >= requiredPasswordLength) {
-                passwordEntered = 1
-                logInButton.destroy()
-                logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Password_Button)
-                logInButton.setPosition(103, 86)
-                cursor.say("Continue", 100)
-            } else {
-                logInButton.destroy()
-                logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
-                logInButton.setPosition(103, 86)
-                logInButton.z = 0
-                cursor.destroy()
-                cursor = sprites.create(img`
-                    f f . . . . . . 
-                    f 1 f . . . . . 
-                    f 1 1 f . . . . 
-                    f 1 1 1 f . . . 
-                    f 1 1 1 1 f . . 
-                    f 1 1 1 1 1 f . 
-                    f 1 1 1 1 1 1 f 
-                    f 1 1 1 1 f f f 
-                    f 1 1 1 1 f . . 
-                    f 1 f f 1 1 f . 
-                    f f . . f 1 1 f 
-                    . . . . f 1 1 f 
-                    . . . . . f f . 
-                    `, SpriteKind.Player)
-                cursor.setPosition(cursorPosX, cursorPosY)
-                controller.moveSprite(cursor)
-            }
-            pressCooldown = 1
-            pause(750)
-            pressCooldown = 0
-        }
-    }
-})
 function passwordLoadingScreen () {
-    cursor.destroy()
+    cursorTop.destroy()
+    cursorBottom.destroy()
     userIcon.destroy()
     passwordField.destroy()
     logInButton.destroy()
@@ -1898,41 +1894,79 @@ function passwordLoadingScreen () {
     true
     )
     pause(randint(3000, 10000))
-    if (passwordInput == user1Password) {
-        color.startFade(color.originalPalette, color.Black, 500)
-        color.pauseUntilFadeDone()
-        color.startFade(color.Black, color.originalPalette, 500)
-        music.playTone(554, music.beat(BeatFraction.Half))
-        music.playTone(622, music.beat(BeatFraction.Half))
-        pause(100)
-        music.playTone(740, music.beat(BeatFraction.Half))
-        music.playTone(932, music.beat(BeatFraction.Whole))
-        desktop()
-    } else {
-        welcomeText.destroy()
-        loadingCircle.destroy()
-        passwordErrorText = textsprite.create("Password incorrect", 0, 2)
-        passwordErrorText.setPosition(80, 23)
-        passwordErrorText.z = 100
-        passwordEntered = 0
-        lockScreen()
+    if (currentUser == 1) {
+        if (passwordInput == user1Password) {
+            color.startFade(color.originalPalette, color.Black, 500)
+            color.pauseUntilFadeDone()
+            color.startFade(color.Black, color.originalPalette, 500)
+            music.playTone(554, music.beat(BeatFraction.Half))
+            music.playTone(622, music.beat(BeatFraction.Half))
+            pause(100)
+            music.playTone(740, music.beat(BeatFraction.Half))
+            music.playTone(932, music.beat(BeatFraction.Whole))
+            desktop()
+        } else {
+            welcomeText.destroy()
+            loadingCircle.destroy()
+            passwordErrorText = textsprite.create("Password incorrect", 0, 2)
+            passwordErrorText.setPosition(80, 23)
+            passwordErrorText.z = 100
+            passwordEntered = 0
+            lockScreen()
+        }
+    } else if (currentUser == 2) {
+        if (passwordInput == user2Password) {
+            color.startFade(color.originalPalette, color.Black, 500)
+            color.pauseUntilFadeDone()
+            color.startFade(color.Black, color.originalPalette, 500)
+            music.playTone(554, music.beat(BeatFraction.Half))
+            music.playTone(622, music.beat(BeatFraction.Half))
+            pause(100)
+            music.playTone(740, music.beat(BeatFraction.Half))
+            music.playTone(932, music.beat(BeatFraction.Whole))
+            desktop()
+        } else {
+            welcomeText.destroy()
+            loadingCircle.destroy()
+            passwordErrorText = textsprite.create("Password incorrect", 0, 2)
+            passwordErrorText.setPosition(80, 23)
+            passwordErrorText.z = 100
+            passwordEntered = 0
+            lockScreen()
+        }
     }
 }
+sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Button, function (sprite, otherSprite) {
+    if (passwordEntered == 1 && passwordLength >= requiredPasswordLength) {
+        cursorTop.say("Continue", 100)
+        if (pressCooldown == 0) {
+            if (controller.A.isPressed()) {
+                passwordLoadingScreen()
+                pressCooldown = 1
+                pause(750)
+                pressCooldown = 0
+            }
+        }
+    }
+})
 let passwordErrorText: TextSprite = null
 let loadingCircle: Sprite = null
 let welcomeText: TextSprite = null
+let allowBoot = 0
 let textSprite: TextSprite = null
 let passwordText: Sprite = null
+let passwordLength = 0
 let passwordInput = ""
-let allowBoot = 0
 let graphicsStatus: TextSprite = null
 let controllerStatus: TextSprite = null
 let graphicsText: TextSprite = null
 let controllerText: TextSprite = null
 let makeBootText: TextSprite = null
+let pressCooldown = 0
 let firstPasswordInput = 0
+let cursorBottom: Sprite = null
+let soundMixerButton: Sprite = null
 let networkButton: Sprite = null
-let accesibilityButton: Sprite = null
 let shutdownButton: Sprite = null
 let su_menuUser1: Sprite = null
 let su_user2Box: Sprite = null
@@ -1941,11 +1975,9 @@ let logInButton: Sprite = null
 let passwordField: Sprite = null
 let usernameText: TextSprite = null
 let userIcon: Sprite = null
-let pressCooldown = 0
-let passwordLength = 0
 let cursorPosY = 0
 let cursorPosX = 0
-let cursor: Sprite = null
+let cursorTop: Sprite = null
 let animationInterval = 0
 let windowsLogo: Sprite = null
 let startingWindowsText: TextSprite = null
@@ -1955,6 +1987,8 @@ let gDriversBootTime = 0
 let cDriversBootTime = 0
 let passwordEntered = 0
 let requiredPasswordLength = 0
+let currentUser = 0
+let user2Password = ""
 let user1Password = ""
 let user2Name = ""
 let user1Name = ""
@@ -1964,11 +1998,11 @@ power2 = 0
 scene.setBackgroundImage(assets.image`bg_0`)
 startupKeyText = textsprite.create("Press     to startup")
 startupKeyText.setPosition(69, 11)
-user1Name = "Evan"
-user2Name = "user"
+user1Name = "Admin"
+user2Name = "User"
 user1Password = "1234"
-let user2Password = "1111"
-let currentUser = 1
+user2Password = "1111"
+currentUser = 1
 requiredPasswordLength = 4
 passwordEntered = 0
 let cDrivers = 1
