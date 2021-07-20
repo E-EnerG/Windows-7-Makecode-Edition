@@ -673,11 +673,13 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherS
             }
         } else if (powerMenuOpen == true) {
             if (pressCooldown == 0) {
-                powerMenu.destroy()
-                pressCooldown = 1
-                pause(500)
-                pressCooldown = 0
-                powerMenuOpen = false
+                if (controller.A.isPressed()) {
+                    powerMenu.destroy()
+                    pressCooldown = 1
+                    pause(500)
+                    pressCooldown = 0
+                    powerMenuOpen = false
+                }
             }
         }
     } else if (otherSprite == networkButton) {
