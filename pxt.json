@@ -1,5 +1,5 @@
 {
-    "name": "WindOS Build 2101_v0.3.1",
+    "name": "WindOS Build 2301_v0.1.3",
     "description": "",
     "dependencies": {
         "device": "*",
@@ -13,7 +13,8 @@
         "Color Fading": "github:jwunderl/pxt-color#v0.2.0",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.0",
         "arcade-text": "github:microsoft/arcade-text#v1.3.0",
-        "arcade-shader": "github:riknoll/arcade-shader#master"
+        "arcade-shader": "github:riknoll/arcade-shader#master",
+        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.2.2"
     },
     "files": [
         "main.blocks",

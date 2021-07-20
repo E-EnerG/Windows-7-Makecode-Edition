@@ -9,6 +9,7 @@ namespace SpriteKind {
     export const SwitchUser_Button = SpriteKind.create()
     export const Cursor = SpriteKind.create()
     export const Cursor_bottom = SpriteKind.create()
+    export const Menu = SpriteKind.create()
 }
 function bootAnimation () {
     startupKeyText.destroy()
@@ -597,19 +598,17 @@ function bootAnimation () {
     startingWindowsText.destroy()
     windowsLogo.destroy()
     cursorTop = sprites.create(img`
-        . . 1 1 1 9 9 9 . . . . 
-        . 1 f f f f f f 9 . . . 
-        1 f 1 1 1 9 9 6 f 9 . . 
-        1 f 1 f f f 6 6 f 9 . . 
-        9 f 1 f f 6 f f 6 . . . 
-        9 f 9 f 6 f 6 f 6 . . . 
-        6 f 9 6 f 6 f 8 f 8 . . 
-        6 f 6 6 f f 8 f 8 f 8 . 
-        . 6 f f 6 6 f 8 f 8 f 8 
-        . . 6 6 . . 8 f 8 8 f 8 
-        . . . . . . . 8 f f 8 . 
-        . . . . . . . . 8 8 . . 
-        `, SpriteKind.Player)
+        . f f f f f f . . . 
+        f 1 1 1 9 9 6 f . . 
+        f 1 f f f 6 6 f . . 
+        f 1 f f 6 f f . . . 
+        f 9 f 6 f 6 f . . . 
+        f 9 6 f 6 f 8 f . . 
+        f 6 6 f f 8 f 8 f . 
+        . f f . . f 8 f 8 f 
+        . . . . . . f 8 8 f 
+        . . . . . . . f f . 
+        `, SpriteKind.Cursor)
     cursorTop.setStayInScreen(true)
     controller.moveSprite(cursorTop, 100, 100)
     pause(2000)
@@ -617,11 +616,78 @@ function bootAnimation () {
     cursorPosY = cursorTop.y
     lockScreen()
 }
+sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherSprite) {
+    if (otherSprite == powerButton) {
+        cursorTop.say("Power", 100)
+        if (powerMenuOpen == false) {
+            if (pressCooldown == 0) {
+                if (controller.A.isPressed()) {
+                    powerMenu = sprites.create(img`
+                        ffffffffffffffffffffffffffffffffffffffffffffffff
+                        f1111111111111111111111999999999999999999999999f
+                        f1ffffffffffffffffffffffffffffffffffffffffffff9f
+                        f1f999999999999999999999999999999999999999999f9f
+                        f1f9fffff999999999999999999999999999999999999f9f
+                        f9f9f691f999999999999999999999999999999999999f9f
+                        f9f9fff9f999999999999999999999999999999999999f6f
+                        f9f9fff6f999999999999999999999999999999999999f6f
+                        f9f9f886f999999999999999999999999999999999999f6f
+                        f9f9fffff999999999999999999999999999999999999f6f
+                        f9f999999999999999999999999999999999999999999f6f
+                        f9ffffffffffffffffffffffffffffffffffffffffffff6f
+                        f9ffffffffffffffffffffffffffffffffffffffffffff6f
+                        f9999999999999999999999999999999996666666666666f
+                        f9ffffffffffffffffffffffffffffffffffffffffffff6f
+                        f9f999999999999999999999999999999999999999999f6f
+                        f6f9ffffff99999999999999999999999999999999999f6f
+                        f6f9f1966f99999999999999999999999999999999999f6f
+                        f6f9f9ff6f99999999999999999999999999999999999f6f
+                        f6f9f6ff8f99999999999999999999999999999999999f6f
+                        f6f9f8f88f99999999999999999999999999999999999f8f
+                        f6f9ffffff99999999999999999999999999999999999f8f
+                        f6f999999999999999999999999999999999999999999f8f
+                        f6ffffffffffffffffffffffffffffffffffffffffffff8f
+                        f6ffffffffffffffffffffffffffffffffffffffffffff8f
+                        f6666688888888888888888888888888888888888888888f
+                        f6ffffffffffffffffffffffffffffffffffffffffffff8f
+                        f6f999999999999999999999999999999999999999999f8f
+                        f6f9ffff9999999999999999999999999999999999999f8f
+                        f8f9f19f9999999999999999999999999999999999999f8f
+                        f8f9f96f9999999999999999999999999999999999999f8f
+                        f8f9f68f9999999999999999999999999999999999999f8f
+                        f8f9f88f9999999999999999999999999999999999999f8f
+                        f8f9ffff9999999999999999999999999999999999999f8f
+                        f8f999999999999999999999999999999999999999999f8f
+                        f8ffffffffffffffffffffffffffffffffffffffffffff8f
+                        f8ffffffffffffffffffffffffffffffffffffffffffff8f
+                        f8888888888888888888888888888888888888888888888f
+                        ffffffffffffffffffffffffffffffffffffffffffffffff
+                        ffffffffffffffffffffffffffffffffffffffffffffffff
+                        `, SpriteKind.Menu)
+                    powerMenu.setPosition(powerButton.x + powerButton.width / 2 - powerMenu.width / 2, powerButton.y - (powerButton.height / 2 + (powerMenu.height / 2 - 1)))
+                    pressCooldown = 1
+                    pause(750)
+                    pressCooldown = 0
+                    pause(100)
+                    powerMenuOpen = true
+                }
+            }
+        } else if (powerMenuOpen == true) {
+            if (pressCooldown == 0) {
+                powerMenu.destroy()
+                pressCooldown = 1
+                pause(750)
+                pressCooldown = 0
+                pause(100)
+                powerMenuOpen = false
+            }
+        }
+    }
+})
 function desktop () {
 	
 }
 function lockScreen () {
-    console.logValue("pass", user1Password)
     cursorTop.destroy()
     scene.setBackgroundImage(img`
         9999999999999999bbbbbb66666666b777777777777777777777777777777777777d7669999999999999999999999999bbbbbb66666666b777777777777777777777777777777777777d766999999999
@@ -804,9 +870,9 @@ function lockScreen () {
         ffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffff
         `, SpriteKind.Password_Textbox)
-    passwordField.setPosition(80, 86)
+    passwordField.setPosition(72, 86)
     logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
-    logInButton.setPosition(88, 86)
+    logInButton.setPosition(103, 86)
     su_user1Box = sprites.create(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         f1111111111111111111199999999999999996666666666666666666666f
@@ -855,7 +921,9 @@ function lockScreen () {
     su_user2Box.setPosition(30, 29)
     su_menuUser1 = textsprite.create(user1Name, 0, 1)
     su_menuUser1.setPosition(30, 9)
-    shutdownButton = sprites.create(img`
+    su_menuUser2 = textsprite.create(user2Name, 0, 1)
+    su_menuUser2.setPosition(30, 28)
+    powerButton = sprites.create(img`
         f f f f f f f f f f f f f f f f 
         f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
         f 1 f f f f f f f f f f f f 6 f 
@@ -872,8 +940,8 @@ function lockScreen () {
         f 6 6 6 6 8 8 8 8 8 8 8 8 8 8 f 
         f f f f f f f f f f f f f f f f 
         f f f f f f f f f f f f f f f f 
-        `, SpriteKind.Shutdown_Button)
-    shutdownButton.setPosition(152, 112)
+        `, SpriteKind.Button)
+    powerButton.setPosition(152, 112)
     networkButton = sprites.create(img`
         f f f f f f f f f f f f f f f f 
         f 1 1 1 1 1 9 9 9 9 9 6 6 6 6 f 
@@ -928,6 +996,8 @@ function lockScreen () {
     cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
     controller.moveSprite(cursorTop, 100, 100)
     controller.moveSprite(cursorBottom, 100, 100)
+    cursorTop.z = 100
+    cursorBottom.z = 100
     cursorTop.setFlag(SpriteFlag.StayInScreen, true)
     cursorBottom.setFlag(SpriteFlag.StayInScreen, true)
     cursorBottom.setPosition(cursorTop.x, cursorTop.y)
@@ -1112,12 +1182,13 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
     if (pressCooldown == 0) {
         if (controller.A.isPressed()) {
             if (firstPasswordInput == 1) {
-                passwordInput = game.askForString("Enter Password", 6)
+                passwordInput = game.askForString("Enter Password", 4)
                 cursorPosX = cursorTop.x
                 cursorPosY = cursorTop.y
-                if (passwordInput.isEmpty() || passwordInput == "    ") {
+                if (passwordInput.isEmpty() || passwordInput.includes("  ")) {
                     passwordLength = 0
                     passwordText = textsprite.create("", 0, 0)
+                    passwordText.destroy()
                 } else {
                     cursorTop.z = 100
                     passwordLength = passwordInput.length
@@ -1127,7 +1198,7 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
                 }
             } else {
                 passwordText.destroy()
-                passwordInput = game.askForString("Enter Password", 6)
+                passwordInput = game.askForString("Enter Password", 4)
                 cursorPosX = cursorTop.x
                 cursorPosY = cursorTop.y
                 if (passwordInput.isEmpty()) {
@@ -1146,29 +1217,62 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
                 logInButton.destroy()
                 logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Password_Button)
                 logInButton.setPosition(103, 86)
-                cursorTop.say("Continue", 100)
+                cursorPosX = cursorTop.x
+                cursorPosY = cursorTop.y
+                cursorTop.destroy()
+                cursorBottom.destroy()
+                cursorTop = sprites.create(img`
+                    . f f f f f f . . . 
+                    f 1 1 1 9 9 6 f . . 
+                    f 1 f f f 6 6 f . . 
+                    f 1 f f 6 f f . . . 
+                    f 9 f 6 f 6 f . . . 
+                    f 9 6 f 6 . . . . . 
+                    f 6 6 f f . . . . . 
+                    . f f . . . . . . . 
+                    . . . . . . . . . . 
+                    . . . . . . . . . . 
+                    `, SpriteKind.Cursor)
+                cursorTop.setPosition(cursorPosX, cursorPosY)
+                cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+                cursorBottom.setPosition(cursorTop.x, cursorTop.y)
+                cursorTop.setStayInScreen(true)
+                cursorBottom.setStayInScreen(true)
+                cursorTop.z = 100
+                cursorBottom.z = 100
+                controller.moveSprite(cursorTop, 100, 100)
+                controller.moveSprite(cursorBottom, 100, 100)
+                cursorTop.say("Enter password", 100)
             } else {
                 logInButton.destroy()
                 logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
                 logInButton.setPosition(103, 86)
-                logInButton.z = 0
+                cursorPosX = cursorTop.x
+                cursorPosY = cursorTop.y
                 cursorTop.destroy()
+                cursorBottom.destroy()
                 cursorTop = sprites.create(img`
-                    . . 1 1 1 9 9 9 . . . . 
-                    . 1 f f f f f f 9 . . . 
-                    1 f 1 1 1 9 9 6 f 9 . . 
-                    1 f 1 f f f 6 6 f 9 . . 
-                    9 f 1 f f 6 f f 6 . . . 
-                    9 f 9 f 6 f 6 f 6 . . . 
-                    6 f 9 6 f 6 f 8 f 8 . . 
-                    6 f 6 6 f f 8 f 8 f 8 . 
-                    . 6 f f 6 6 f 8 f 8 f 8 
-                    . . 6 6 . . 8 f 8 8 f 8 
-                    . . . . . . . 8 f f 8 . 
-                    . . . . . . . . 8 8 . . 
-                    `, SpriteKind.Player)
+                    . f f f f f f . . . 
+                    f 1 1 1 9 9 6 f . . 
+                    f 1 f f f 6 6 f . . 
+                    f 1 f f 6 f f . . . 
+                    f 9 f 6 f 6 f . . . 
+                    f 9 6 f 6 . . . . . 
+                    f 6 6 f f . . . . . 
+                    . f f . . . . . . . 
+                    . . . . . . . . . . 
+                    . . . . . . . . . . 
+                    `, SpriteKind.Cursor)
                 cursorTop.setPosition(cursorPosX, cursorPosY)
-                controller.moveSprite(cursorTop)
+                cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+                cursorBottom.setPosition(cursorTop.x, cursorTop.y)
+                cursorTop.setStayInScreen(true)
+                cursorBottom.setStayInScreen(true)
+                controller.moveSprite(cursorTop, 100, 100)
+                controller.moveSprite(cursorBottom, 100, 100)
+                cursorTop.z = 100
+                cursorBottom.z = 100
+                cursorTop.say("Enter password", 100)
             }
             pressCooldown = 1
             pause(750)
@@ -1178,7 +1282,6 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
 })
 sprites.onOverlap(SpriteKind.Cursor, SpriteKind.SwitchUser_Button, function (sprite, otherSprite) {
     if (otherSprite == su_user1Box) {
-        cursorTop.say(user1Name, 100)
         if (pressCooldown == 0) {
             if (controller.A.isPressed()) {
                 currentUser = 1
@@ -1228,62 +1331,63 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.SwitchUser_Button, function (spr
                     `)
                 usernameText.setText(user1Name)
                 pressCooldown = 1
-                pause(750)
+                pause(100)
                 pressCooldown = 0
             }
         }
     } else if (otherSprite == su_user2Box) {
-        cursorTop.say(user2Name, 100)
-        if (controller.A.isPressed()) {
-            currentUser = 2
-            su_user2Box.setImage(img`
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                f1111111111111111111199999999999999996666666666666666666666f
-                f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                f9f999999999999999999999999999999999999999999999999999999f6f
-                f9f999fff999999999999999999999999999999999999999999999999f6f
-                f9f99f168f99999999999999999999999999999999999999999999999f6f
-                f9f99f968f99999999999999999999999999999999999999999999999f6f
-                f9f99fffff99999999999999999999999999999999999999999999999f6f
-                f9f99fffff99999999999999999999999999999999999999999999999f8f
-                f9f999f6f999999999999999999999999999999999999999999999999f8f
-                f9f99fffff99999999999999999999999999999999999999999999999f8f
-                f9f9f19688f9999999999999999999999999999999999999999999999f8f
-                f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                f6f999999999999999999999999999999999999999999999999999999f8f
-                f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                f6666666666666666666666666668888888888888888888888888888888f
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                `)
-            su_user1Box.setImage(img`
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                f1111111111111111111199999999999999996666666666666666666666f
-                f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                f9f666666666666666666666666666666666666666666666666666666f6f
-                f9f666fff666666666666666666666666666666666666666666666666f6f
-                f9f66f168f66666666666666666666666666666666666666666666666f6f
-                f9f66f968f66666666666666666666666666666666666666666666666f6f
-                f9f66fffff66666666666666666666666666666666666666666666666f6f
-                f9f66fffff66666666666666666666666666666666666666666666666f8f
-                f9f666f6f666666666666666666666666666666666666666666666666f8f
-                f9f66fffff66666666666666666666666666666666666666666666666f8f
-                f9f6f19688f6666666666666666666666666666666666666666666666f8f
-                f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                f6f666666666666666666666666666666666666666666666666666666f8f
-                f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                f6666666666666666666666666668888888888888888888888888888888f
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                `)
-            usernameText.setText(user2Name)
-            pressCooldown = 1
-            pause(750)
-            pressCooldown = 0
+        if (pressCooldown == 0) {
+            if (controller.A.isPressed()) {
+                currentUser = 2
+                su_user2Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f999999999999999999999999999999999999999999999999999999f6f
+                    f9f999fff999999999999999999999999999999999999999999999999f6f
+                    f9f99f168f99999999999999999999999999999999999999999999999f6f
+                    f9f99f968f99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f999f6f999999999999999999999999999999999999999999999999f8f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f9f19688f9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f999999999999999999999999999999999999999999999999999999f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                su_user1Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f666666666666666666666666666666666666666666666666666666f6f
+                    f9f666fff666666666666666666666666666666666666666666666666f6f
+                    f9f66f168f66666666666666666666666666666666666666666666666f6f
+                    f9f66f968f66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f666f6f666666666666666666666666666666666666666666666666f8f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f6f19688f6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f666666666666666666666666666666666666666666666666666666f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                usernameText.setText(user2Name)
+                pressCooldown = 1
+                pause(100)
+                pressCooldown = 0
+            }
         }
     }
 })
@@ -1908,9 +2012,9 @@ function passwordLoadingScreen () {
         } else {
             welcomeText.destroy()
             loadingCircle.destroy()
-            passwordErrorText = textsprite.create("Password incorrect", 0, 2)
-            passwordErrorText.setPosition(80, 23)
-            passwordErrorText.z = 100
+            passwordText = textsprite.create("Wrong", 0, 2)
+            passwordText.setPosition(72, 85)
+            passwordText.z = 10
             passwordEntered = 0
             lockScreen()
         }
@@ -1928,9 +2032,9 @@ function passwordLoadingScreen () {
         } else {
             welcomeText.destroy()
             loadingCircle.destroy()
-            passwordErrorText = textsprite.create("Password incorrect", 0, 2)
-            passwordErrorText.setPosition(80, 23)
-            passwordErrorText.z = 100
+            passwordText = textsprite.create("Wrong", 0, 2)
+            passwordText.setPosition(72, 85)
+            passwordText.z = 10
             passwordEntered = 0
             lockScreen()
         }
@@ -1949,7 +2053,6 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Button, function (sprit
         }
     }
 })
-let passwordErrorText: TextSprite = null
 let loadingCircle: Sprite = null
 let welcomeText: TextSprite = null
 let allowBoot = 0
@@ -1962,12 +2065,11 @@ let controllerStatus: TextSprite = null
 let graphicsText: TextSprite = null
 let controllerText: TextSprite = null
 let makeBootText: TextSprite = null
-let pressCooldown = 0
 let firstPasswordInput = 0
 let cursorBottom: Sprite = null
 let soundMixerButton: Sprite = null
 let networkButton: Sprite = null
-let shutdownButton: Sprite = null
+let su_menuUser2: TextSprite = null
 let su_menuUser1: Sprite = null
 let su_user2Box: Sprite = null
 let su_user1Box: Sprite = null
@@ -1975,6 +2077,9 @@ let logInButton: Sprite = null
 let passwordField: Sprite = null
 let usernameText: TextSprite = null
 let userIcon: Sprite = null
+let powerMenu: Sprite = null
+let pressCooldown = 0
+let powerButton: Sprite = null
 let cursorPosY = 0
 let cursorPosX = 0
 let cursorTop: Sprite = null
@@ -1985,6 +2090,7 @@ let microsoftText: TextSprite = null
 let bootSuccess = 0
 let gDriversBootTime = 0
 let cDriversBootTime = 0
+let powerMenuOpen = false
 let passwordEntered = 0
 let requiredPasswordLength = 0
 let currentUser = 0
@@ -2005,6 +2111,7 @@ user2Password = "1111"
 currentUser = 1
 requiredPasswordLength = 4
 passwordEntered = 0
+powerMenuOpen = false
 let cDrivers = 1
 let gDrivers = 1
 if ((cDrivers && gDrivers) == 0) {
