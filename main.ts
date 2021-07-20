@@ -666,9 +666,8 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherS
                         `, SpriteKind.Menu)
                     powerMenu.setPosition(powerButton.x + powerButton.width / 2 - powerMenu.width / 2, powerButton.y - (powerButton.height / 2 + (powerMenu.height / 2 - 1)))
                     pressCooldown = 1
-                    pause(750)
+                    pause(500)
                     pressCooldown = 0
-                    pause(100)
                     powerMenuOpen = true
                 }
             }
@@ -676,12 +675,15 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherS
             if (pressCooldown == 0) {
                 powerMenu.destroy()
                 pressCooldown = 1
-                pause(750)
+                pause(500)
                 pressCooldown = 0
-                pause(100)
                 powerMenuOpen = false
             }
         }
+    } else if (otherSprite == networkButton) {
+        cursorTop.say("Radio", 100)
+    } else if (otherSprite == soundMixerButton) {
+        cursorTop.say("Volume", 100)
     }
 })
 function desktop () {
@@ -967,10 +969,10 @@ function lockScreen () {
         f 1 f f f f f f f f f f f f 6 f 
         f 1 f 9 9 9 9 9 9 9 9 9 9 f 6 f 
         f 9 f 9 9 9 f f 9 f f 9 9 f 8 f 
-        f 9 f 9 9 f 1 f 9 1 1 f 9 f 8 f 
-        f 6 f 9 f 9 9 f 9 f 9 f 9 f 8 f 
-        f 6 f 9 f 6 6 f 9 f 6 f 9 f 8 f 
-        f 6 f 9 9 f 8 f 9 8 8 f 9 f 8 f 
+        f 9 f 9 9 f 1 f 9 1 9 f 9 f 8 f 
+        f 6 f 9 f 6 9 f 9 f 6 f 9 f 8 f 
+        f 6 f 9 f 8 6 f 9 f 6 f 9 f 8 f 
+        f 6 f 9 9 f 8 f 9 6 8 f 9 f 8 f 
         f 6 f 9 9 9 f f 9 f f 9 9 f 8 f 
         f 6 f 9 9 9 9 9 9 9 9 9 9 f 8 f 
         f 6 f f f f f f f f f f f f 8 f 
@@ -1182,7 +1184,7 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
     if (pressCooldown == 0) {
         if (controller.A.isPressed()) {
             if (firstPasswordInput == 1) {
-                passwordInput = game.askForString("Enter Password", 4)
+                passwordInput = game.askForString("Enter Password", 6)
                 cursorPosX = cursorTop.x
                 cursorPosY = cursorTop.y
                 if (passwordInput.isEmpty() || passwordInput.includes("  ")) {
@@ -1198,7 +1200,7 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (spri
                 }
             } else {
                 passwordText.destroy()
-                passwordInput = game.askForString("Enter Password", 4)
+                passwordInput = game.askForString("Enter Password", 6)
                 cursorPosX = cursorTop.x
                 cursorPosY = cursorTop.y
                 if (passwordInput.isEmpty()) {
@@ -2067,8 +2069,6 @@ let controllerText: TextSprite = null
 let makeBootText: TextSprite = null
 let firstPasswordInput = 0
 let cursorBottom: Sprite = null
-let soundMixerButton: Sprite = null
-let networkButton: Sprite = null
 let su_menuUser2: TextSprite = null
 let su_menuUser1: Sprite = null
 let su_user2Box: Sprite = null
@@ -2079,6 +2079,8 @@ let usernameText: TextSprite = null
 let userIcon: Sprite = null
 let powerMenu: Sprite = null
 let pressCooldown = 0
+let soundMixerButton: Sprite = null
+let networkButton: Sprite = null
 let powerButton: Sprite = null
 let cursorPosY = 0
 let cursorPosX = 0
