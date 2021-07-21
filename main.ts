@@ -1,16 +1,137 @@
 namespace SpriteKind {
     export const Icon = SpriteKind.create()
-    export const TextBar = SpriteKind.create()
     export const Button = SpriteKind.create()
-    export const Password_Textbox = SpriteKind.create()
-    export const Password_Button = SpriteKind.create()
-    export const Loading_Animation = SpriteKind.create()
-    export const Shutdown_Button = SpriteKind.create()
-    export const SwitchUser_Button = SpriteKind.create()
     export const Cursor = SpriteKind.create()
     export const Cursor_bottom = SpriteKind.create()
     export const Menu = SpriteKind.create()
+    export const Textbox = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Textbox, function (sprite, otherSprite) {
+    cursorTop.setImage(img`
+        . f f f . . . . 
+        . f 1 f . . . . 
+        . f 9 f . . . . 
+        . f 9 f . . . . 
+        . f 9 f f f f f 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        `)
+    cursorBottom.setImage(img`
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        f f 6 6 6 6 8 f 
+        f 8 6 6 6 6 8 f 
+        f 8 6 6 6 6 8 f 
+        f f 8 8 8 8 8 f 
+        . f f f f f f . 
+        `)
+    if (otherSprite == passwordField) {
+        cursorTop.say("Enter password", 100)
+        if (pressCooldown == 0) {
+            if (controller.A.isPressed()) {
+                if (firstPasswordInput == 1) {
+                    passwordInput = game.askForString("Enter Password", 6)
+                    cursorPosX = cursorTop.x
+                    cursorPosY = cursorTop.y
+                    if (passwordInput.isEmpty() || passwordInput.includes("    ")) {
+                        passwordLength = 0
+                        passwordText = textsprite.create("", 0, 0)
+                    } else {
+                        cursorTop.z = 100
+                        passwordLength = passwordInput.length
+                        passwordText = textsprite.create(passwordInput, 0, 1)
+                        passwordText.setPosition(72, 85)
+                        firstPasswordInput = 0
+                    }
+                } else {
+                    passwordText.destroy()
+                    passwordInput = game.askForString("Enter Password", 6)
+                    cursorPosX = cursorTop.x
+                    cursorPosY = cursorTop.y
+                    if (passwordInput.isEmpty()) {
+                        passwordLength = 0
+                        textSprite = textsprite.create("", 0, 0)
+                    } else {
+                        passwordText.destroy()
+                        cursorTop.z = 100
+                        passwordLength = passwordInput.length
+                        passwordText = textsprite.create(passwordInput, 0, 1)
+                        passwordText.setPosition(72, 85)
+                    }
+                }
+                if (passwordLength >= requiredPasswordLength) {
+                    passwordEntered = 1
+                    logInButton.setImage(assets.image`myImage0`)
+                    sprites.setDataBoolean(logInButton, "enabled", true)
+                    cursorPosX = cursorTop.x
+                    cursorPosY = cursorTop.y
+                    cursorTop.destroy()
+                    cursorBottom.destroy()
+                    cursorTop = sprites.create(img`
+                        . f f f f f f . . . 
+                        f 1 1 1 9 9 6 f . . 
+                        f 1 f f f 6 6 f . . 
+                        f 1 f f 6 f f . . . 
+                        f 9 f 6 f 6 f . . . 
+                        f 9 6 f 6 . . . . . 
+                        f 6 6 f f . . . . . 
+                        . f f . . . . . . . 
+                        . . . . . . . . . . 
+                        . . . . . . . . . . 
+                        `, SpriteKind.Cursor)
+                    cursorTop.setPosition(cursorPosX, cursorPosY)
+                    cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+                    cursorBottom.setPosition(cursorTop.x, cursorTop.y)
+                    cursorTop.setStayInScreen(true)
+                    cursorBottom.setStayInScreen(true)
+                    cursorTop.z = 100
+                    cursorBottom.z = 100
+                    controller.moveSprite(cursorTop, 100, 100)
+                    controller.moveSprite(cursorBottom, 100, 100)
+                    cursorTop.say("Enter password", 100)
+                } else {
+                    logInButton.setImage(assets.image`myImage2`)
+                    sprites.setDataBoolean(logInButton, "enabled", false)
+                    cursorPosX = cursorTop.x
+                    cursorPosY = cursorTop.y
+                    cursorTop.destroy()
+                    cursorBottom.destroy()
+                    cursorTop = sprites.create(img`
+                        . f f f f f f . . . 
+                        f 1 1 1 9 9 6 f . . 
+                        f 1 f f f 6 6 f . . 
+                        f 1 f f 6 f f . . . 
+                        f 9 f 6 f 6 f . . . 
+                        f 9 6 f 6 . . . . . 
+                        f 6 6 f f . . . . . 
+                        . f f . . . . . . . 
+                        . . . . . . . . . . 
+                        . . . . . . . . . . 
+                        `, SpriteKind.Cursor)
+                    cursorTop.setPosition(cursorPosX, cursorPosY)
+                    cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+                    cursorBottom.setPosition(cursorTop.x, cursorTop.y)
+                    cursorTop.setStayInScreen(true)
+                    cursorBottom.setStayInScreen(true)
+                    controller.moveSprite(cursorTop, 100, 100)
+                    controller.moveSprite(cursorBottom, 100, 100)
+                    cursorTop.z = 100
+                    cursorBottom.z = 100
+                    cursorTop.say("Enter password", 100)
+                }
+                pressCooldown = 1
+                pause(750)
+                pressCooldown = 0
+            }
+        }
+    }
+})
 function bootAnimation () {
     startupKeyText.destroy()
     scene.setBackgroundImage(img`
@@ -135,468 +256,681 @@ function bootAnimation () {
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         `)
-    pause(1000)
-    microsoftText = textsprite.create("Microsoft Corporation", 0, 1)
-    microsoftText.setPosition(78, 111)
-    startingWindowsText = textsprite.create("Starting Windows", 0, 1)
-    startingWindowsText.setPosition(77, 93)
-    windowsLogo = sprites.create(img`
+    pause(500)
+    windOSLogo = sprites.create(img`
         . . . . . . f f f f . . . . . . . 
-        . . . . f f b b d d f . . . . . . 
-        . . . f b d 1 1 1 1 1 f . f f . . 
-        . . . . f f d d d 1 1 d f 1 b f . 
-        . . . . . . f f f d 1 1 f 1 d f . 
-        . . . . . f d d f f 1 1 d f 1 1 f 
-        . . . f f 1 1 1 b f 1 1 d f 1 1 f 
-        . . f d d d 1 1 d b f 1 1 b 1 1 f 
-        . . . f f f d 1 1 d f 1 1 b 1 d f 
-        . . . . . . f f 1 1 b 1 1 d 1 d f 
-        . . . . . . . f b 1 b 1 1 d 1 b f 
-        . . . . . . . f b 1 d 1 1 1 1 b f 
-        . . . f f f f f d 1 1 1 1 d b f . 
-        . f f d d d 1 1 1 1 1 1 d f f . . 
-        f 1 1 1 1 1 1 1 1 d d b f . . . . 
-        . f f f d d b b f f f f . . . . . 
+        . . . . f f 1 1 1 1 f . . . . . . 
+        . . . f 1 1 1 1 1 1 1 f . f f . . 
+        . . . . f f 1 1 1 1 1 1 f 1 1 f . 
+        . . . . . . f f f 1 1 1 f 1 1 f . 
+        . . . . . f 1 1 f f 1 1 1 f 1 1 f 
+        . . . f f 1 1 1 1 f 1 1 1 f 1 1 f 
+        . . f 1 1 1 1 1 1 1 f 1 1 1 1 1 f 
+        . . . f f f 1 1 1 1 f 1 1 1 1 1 f 
+        . . . . . . f f 1 1 1 1 1 1 1 1 f 
+        . . . . . . . f 1 1 1 1 1 1 1 1 f 
+        . . . . . . . f 1 1 1 1 1 1 1 1 f 
+        . . . f f f f f 1 1 1 1 1 1 1 f . 
+        . f f 1 1 1 1 1 1 1 1 1 1 f f . . 
+        f 1 1 1 1 1 1 1 1 1 1 1 f . . . . 
+        . f f f 1 1 1 1 f f f f . . . . . 
         . . . . f f f f . . . . . . . . . 
         `, SpriteKind.Icon)
-    animationInterval = randint(95, 120)
     animation.runImageAnimation(
-    windowsLogo,
+    windOSLogo,
     [img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df.
-        ........fb1b11d1bf.
-        ........fb1d1111bf.
-        ....fffffd1111dbf..
-        ..ffddd111111dff...
-        .f11111111ddbf.....
-        ..fffddbbffff......
-        .....ffff8888......
-        ...................
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f11f9.
+        ....999fff111f11f99
+        ...666f11ff111f11f6
+        ..66ff1111f111f11f6
+        ..6f1111111f11111f6
+        ..66fff1111f11111f6
+        ...6666ff11111111f6
+        ......66f11111111f6
+        ...88888f11111111f8
+        .888fffff1111111f88
+        88ff1111111111ff88.
+        8f11111111111f888..
+        88fff1111ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df.
-        ........fb1b11d1bf.
-        ........fb1d1111bf.
-        ....fffffd1111dbf..
-        ..ffddd111111dff...
-        .f11111111ddbf8....
-        ..fffddbbffff8.....
-        .....ffff8888......
-        ...................
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f11f9.
+        ....999fff111f11f99
+        ...666f11ff111f11f6
+        ..66ff1111f111f11f6
+        ..6f1111111f11111f6
+        ..66fff1111f11111f6
+        ...6666ff11111111f6
+        ......66f11111119f6
+        ...88888f11111999f8
+        .888fffff1111999f88
+        88ff9111199999ff88.
+        8f99999999999f888..
+        88fff9999ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df.
-        ........fb1b11d1bf.
-        ........fb1d1111bf.
-        ....fffffd1111dbf..
-        ..ffddd111111dff...
-        .f11111111ddbf8....
-        ..fffddbbffff8.....
-        .....ffff8888......
-        .....8888..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f11f9.
+        ....999fff111f11f99
+        ...666f11ff111f11f6
+        ..66ff1111f111f11f6
+        ..6f1111111f11111f6
+        ..66fff1111f11119f6
+        ...6666ff11111999f6
+        ......66f11119999f6
+        ...88888f99999999f8
+        .888fffff9999999f88
+        88ff9999999999ff88.
+        8f99999999999f888..
+        88fff9999ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df.
-        ........fb1b11d1bf.
-        ........fb1d1111bf.
-        ....fffffd1111dbf8.
-        ..ffddd111111dff8..
-        .f11111111ddbf88...
-        ..fffddbbffff8.....
-        .....ffff8888......
-        .....8888..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f11f9.
+        ....999fff111f11f99
+        ...666f11ff111f11f6
+        ..66ff1111f111f19f6
+        ..6f1111111f11199f6
+        ..66fff1111f19999f6
+        ...6666ff99999999f6
+        ......66f99999996f6
+        ...88888f99999666f8
+        .888fffff9999666f88
+        88ff6999966666ff88.
+        8f66666666666f888..
+        88fff6666ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df.
-        ........fb1b11d1bf.
-        ........fb1d1111bf.
-        ....fffffd1111dbf8.
-        ..ffddd111111dff8..
-        .f11111111ddbf88...
-        ..fffddbbffff8.....
-        ..888ffff8888......
-        .....8888..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f11f9.
+        ....999fff111f11f99
+        ...666f11ff119f99f6
+        ..66ff1111f199f99f6
+        ..6f9999999f99999f6
+        ..66fff9999f99999f6
+        ...6666ff99999996f6
+        ......66f99999666f6
+        ...88888f99996666f8
+        .888fffff6666666f88
+        88ff6666666666ff88.
+        8f66666666666f888..
+        88fff6666ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f.
-        ....ff111bf11df11f.
-        ...fddd11dbf11b11f.
-        ....fffd11df11b1df.
-        .......ff11b11d1df8
-        ........fb1b11d1bf8
-        ........fb1d1111bf8
-        ....fffffd1111dbf8.
-        .8ffddd111111dff8..
-        8f11111111ddbf88...
-        .8fffddbbffff8.....
-        ..888ffff6668......
-        .....8888..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff111111f99f9.
+        ....999fff119f99f99
+        ...666f99ff999f99f6
+        ..66ff9999f999f99f6
+        ..6f9999999f99996f6
+        ..66fff9999f99666f6
+        ...6666ff99996666f6
+        ......66f66666668f6
+        ...88888f66666888f8
+        .888fffff6666888f88
+        88ff8666688888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff...
-        .....ffddd11df1bf..
-        .......fffd11f1df..
-        ......fddff11df11f8
-        ....ff111bf11df11f8
-        ...fddd11dbf11b11f8
-        ....fffd11df11b1df8
-        .......ff11b11d1df8
-        ........fb1b11d1bf8
-        ....8888fb1d1111bf8
-        ..88fffffd1111dbf8.
-        .8ffddd111111dff8..
-        8f11111111ddbf68...
-        .8fffddbbffff6.....
-        ..888ffff6666......
-        .....8888..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1111111f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f99f99
+        ...666f99ff999f96f6
+        ..66ff9999f999f66f6
+        ..6f9999999f96666f6
+        ..66fff6666f66668f6
+        ...6666ff66666888f6
+        ......66f66668888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf.......
-        ....fbd11111f.ff8..
-        .....ffddd11df1bf8.
-        .......fffd11f1df8.
-        ......fddff11df11f8
-        ....ff111bf11df11f8
-        ...fddd11dbf11b11f8
-        ....fffd11df11b1df8
-        .....88ff11b11d1df8
-        .......8fb1b11d1bf8
-        ....8888fb1d1111bf8
-        ..88fffffd1111dbf8.
-        .8ffddd111111dff8..
-        8f11111111ddbf66...
-        .8fffddbbffff6.....
-        ..888ffff6666......
-        .....8666..........
-        `,img`
-        ...................
-        .......ffff........
-        .....ffbbddf..88...
-        ....fbd11111f8ff8..
-        .....ffddd11df1bf8.
-        .......fffd11f1df8.
-        ......fddff11df11f8
-        ....ff111bf11df11f8
-        ...fddd11dbf11b11f8
-        ...8fffd11df11b1df8
-        ....888ff11b11d1df8
-        .......8fb1b11d1bf8
-        ....8888fb1d1111bf8
-        ..88fffffd1111dbf6.
-        .8ffddd111111dff6..
-        8f11111111ddbf66...
-        .8fffddbbffff6.....
-        ..886ffff6666......
-        .....6666..........
-        `,img`
-        ...................
-        .......ffff8.......
-        .....ffbbddf8.88...
-        ....fbd11111f8ff8..
-        .....ffddd11df1bf8.
-        .......fffd11f1df8.
-        ....88fddff11df11f8
-        ...8ff111bf11df11f8
-        ..8fddd11dbf11b11f8
-        ...8fffd11df11b1df8
-        ....888ff11b11d1df6
-        .......8fb1b11d1bf6
-        ....8888fb1d1111bf6
-        ..88fffffd1111dbf6.
-        .8ffddd111111dff6..
-        8f11111111ddbf66...
-        .6fffddbbffff6.....
-        ..666ffff9996......
-        .....6666..........
-        `,img`
-        ...................
-        .......ffff8.......
-        .....ffbbddf8.88...
-        ....fbd11111f8ff8..
-        .....ffddd11df1bf8.
-        .......fffd11f1df8.
-        ....88fddff11df11f8
-        ...8ff111bf11df11f6
-        ..8fddd11dbf11b11f6
-        ...8fffd11df11b1df6
-        ....888ff11b11d1df6
-        .......8fb1b11d1bf6
-        ....8888fb1d1111bf6
-        ..66fffffd1111dbf6.
-        .6ffddd111111dff6..
-        6f11111111ddbf96...
-        .6fffddbbffff9.....
-        ..666ffff9999......
-        .....6666..........
-        `,img`
-        .......8888........
-        ......8ffff8.......
-        .....ffbbddf8.88...
-        ....fbd11111f8ff8..
-        ....8ffddd11df1bf6.
-        .....88fffd11f1df6.
-        ....88fddff11df11f6
-        ...8ff111bf11df11f6
-        ..8fddd11dbf11b11f6
-        ...8fffd11df11b1df6
-        ....888ff11b11d1df6
-        .......6fb1b11d1bf6
-        ....6666fb1d1111bf6
-        ..66fffffd1111dbf6.
-        .6ffddd111111dff9..
-        6f11111111ddbf99...
-        .6fffddbbffff9.....
-        ..666ffff9999......
-        .....9999..........
-        `,img`
-        .......8888........
-        .....88ffff8.......
-        ....8ffbbddf8.66...
-        ...8fbd11111f8ff6..
-        ....8ffddd11df1bf6.
-        .....88fffd11f1df6.
-        ....88fddff11df11f6
-        ...8ff111bf11df11f6
-        ..8fddd11dbf11b11f6
-        ...8fffd11df11b1df9
-        ....666ff11b11d1df9
-        .......6fb1b11d1bf9
-        ....6666fb1d1111bf9
-        ..66fffffd1111dbf9.
-        .6ffddd111111dff9..
-        6f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......8888........
-        .....88ffff8.......
-        ....8ffbbddf8.66...
-        ...8fbd11111f8ff6..
-        ....8ffddd11df1bf9.
-        .....88fffd11f1df9.
-        ....88fddff11df11f9
-        ...8ff111bf11df11f9
-        ..8fddd11dbf11b11f9
-        ...8fffd11df11b1df9
-        ....666ff11b11d1df9
-        .......6fb1b11d1bf9
-        ....6666fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......8888........
-        .....88ffff6.......
-        ....8ffbbddf6.99...
-        ...8fbd11111f6ff9..
-        ....8ffddd11df1bf9.
-        .....66fffd11f1df9.
-        ....66fddff11df11f9
-        ...6ff111bf11df11f9
-        ..6fddd11dbf11b11f9
-        ...6fffd11df11b1df9
-        ....666ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......6666........
-        .....66ffff9.......
-        ....6ffbbddf9.99...
-        ...6fbd11111f9ff9..
-        ....6ffddd11df1bf9.
-        .....66fffd11f1df9.
-        ....66fddff11df11f9
-        ...6ff111bf11df11f9
-        ..6fddd11dbf11b11f9
-        ...9fffd11df11b1df9
-        ....999ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......6999........
-        .....66ffff9.......
-        ....6ffbbddf9.99...
-        ...6fbd11111f9ff9..
-        ....6ffddd11df1bf9.
-        .....66fffd11f1df9.
-        ....99fddff11df11f9
-        ...9ff111bf11df11f9
-        ..9fddd11dbf11b11f9
-        ...9fffd11df11b1df9
-        ....999ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......6999........
-        .....66ffff9.......
-        ....6ffbbddf9.99...
-        ...9fbd11111f9ff9..
-        ....9ffddd11df1bf9.
-        .....99fffd11f1df9.
-        ....99fddff11df11f9
-        ...9ff111bf11df11f9
-        ..9fddd11dbf11b11f9
-        ...9fffd11df11b1df9
-        ....999ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
-        `,img`
-        .......9999........
-        .....99ffff9.......
-        ....9ffbbddf9.99...
-        ...9fbd11111f9ff9..
-        ....9ffddd11df1bf9.
-        .....99fffd11f1df9.
-        ....99fddff11df11f9
-        ...9ff111bf11df11f9
-        ..9fddd11dbf11b11f9
-        ...9fffd11df11b1df9
-        ....999ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66666f6
+        ..66fff6666f66668f6
+        ...6666ff66666888f6
+        ......66f66668888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `],
-    animationInterval,
+    100,
     false
     )
-    pause(animationInterval * 20 + randint(1300, 2400))
+    pause(1000 + randint(1300, 2400))
     animation.runImageAnimation(
-    windowsLogo,
+    windOSLogo,
     [img`
-        .......9999........
-        .....99ffff9.......
-        ....9ffbbddf9.99...
-        ...9fbd11111f9ff9..
-        ....9ffddd11df1bf9.
-        .....99fffd11f1df9.
-        ....99fddff11df11f9
-        ...9ff111bf11df11f9
-        ..9fddd11dbf11b11f9
-        ...9fffd11df11b1df9
-        ....999ff11b11d1df9
-        .......9fb1b11d1bf9
-        ....9999fb1d1111bf9
-        ..99fffffd1111dbf9.
-        .9ffddd111111dff9..
-        9f11111111ddbf99...
-        .9fffddbbffff9.....
-        ..999ffff9999......
-        .....9999..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `,img`
-        .......6666........
-        .....66ffff6.......
-        ....6ffbbddf6.66...
-        ...6fbd11111f6ff6..
-        ....6ffddd11df1bf6.
-        .....66fffd11f1df6.
-        ....66fddff11df11f6
-        ...6ff111bf11df11f6
-        ..6fddd11dbf11b11f6
-        ...6fffd11df11b1df6
-        ....666ff11b11d1df6
-        .......6fb1b11d1bf6
-        ....6666fb1d1111bf6
-        ..66fffffd1111dbf6.
-        .6ffddd111111dff6..
-        6f11111111ddbf66...
-        .6fffddbbffff6.....
-        ..666ffff6666......
-        .....6666..........
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888c6
+        ...6666ff6666888bc6
+        ......66f888888bbc6
+        ...88888f88888bbbc8
+        .888fffff8888bbbc88
+        88ff88888888bbcc88.
+        8f888888888bbc888..
+        88fff8888fccc88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668c6
+        ..66fff6666f6688bc6
+        ...6666ff666688bbc6
+        ......66f88888bbbc6
+        ...88888f8888bbbbc8
+        .888fffff888bbbbc88
+        88ff8888888bbbcc88.
+        8f88888888bbbc888..
+        88fff8888cccc88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66c6
+        ..6f6666666f6666bc6
+        ..66fff6666f668bbc6
+        ...6666ff66668bbbc6
+        ......66f8888bbbbc6
+        ...88888f888bbbbbc8
+        .888fffff88bbbbbc88
+        88ff888888bbbbcc88.
+        8f8888888bbbbc888..
+        88fff888bcccc88....
+        .8888ffcc88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66c6
+        ..66ff9999f996f6dc6
+        ..6f6666666f666dbc6
+        ..66fff6666f66bbbc6
+        ...6666ff6666bbbbc6
+        ......66f888bbbbbf6
+        ...88888f88bbbbb8f8
+        .888fffff8bbbbb8f88
+        88ff88888bbbbbff88.
+        8f888888bbbbbf888..
+        88fff88bbcccf88....
+        .8888fccc88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f6dc6
+        ..66ff9999f996fddc6
+        ..6f6666666f66ddbc6
+        ..66fff6666f6dbbbc6
+        ...6666ff666dbbbbf6
+        ......66f88bbbbb8f6
+        ...88888f8bbbbb88f8
+        .888fffffbbbbb88f88
+        88ff8888bbbbb8ff88.
+        8f88888bbbbb8f888..
+        88fff8bbbccff88....
+        .8888cccc88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96c99
+        ...666f99ff999fddc6
+        ..66ff9999f996cddc6
+        ..6f6666666f6dddbc6
+        ..66fff6666fddbbbf6
+        ...6666ff66ddbbb8f6
+        ......66f8bbbbb88f6
+        ...88888fbbbbb888f8
+        .888ffffcbbbb888f88
+        88ff888bbbbb88ff88.
+        8f8888bbbbb88f888..
+        88fffbbbbffff88....
+        .8888cccc88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f99c9.
+        ....999fff999f9dc99
+        ...666f99ff999cddc6
+        ..66ff9999f99dcddc6
+        ..6f6666666fddddbf6
+        ..66fff6666cddbb8f6
+        ...6666ff6dddbb88f6
+        ......66fbbbbb888f6
+        ...88888cbbbb8888f8
+        .888fffccbbb8888f88
+        88ff88bbbbb888ff88.
+        8f888bbbbb888f888..
+        88ffcbbbbffff88....
+        .8888cccf88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1ff11.
+        ...99ff999999f91c9.
+        ....999fff999f1dc99
+        ...666f99ff991cddc6
+        ..66ff9999f91dcddf6
+        ..6f6666666cdddd8f6
+        ..66fff666dcddb88f6
+        ...6666ffddddb888f6
+        ......66cbbbb8888f6
+        ...88888cbbb88888f8
+        .888ffcccbb88888f88
+        88ff8bbbbb8888ff88.
+        8f88bbbbb8888f888..
+        88fccbbb8ffff88....
+        .8888ccff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1fc11.
+        ...99ff999999f11c9.
+        ....999fff999c1dc99
+        ...666f99ff911cddf6
+        ..66ff9999f11dcd6f6
+        ..6f666666dcddd68f6
+        ..66fff66ddcdd888f6
+        ...6666fcdddd8888f6
+        ......66cbbb88888f6
+        ...88888cbb888888f8
+        .888fccccb888888f88
+        88ffbbbbb88888ff88.
+        8f8bbbbb88888f888..
+        88cccbb88ffff88....
+        .8888cfff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1cc11.
+        ...99ff999999c11c9.
+        ....999fff991c1dc99
+        ...666f99ff111cd6f6
+        ..66ff9999c11dc66f6
+        ..6f66666ddcdd668f6
+        ..66fff6dddcd6888f6
+        ...6666ccddd68888f6
+        ......66cbb888888f6
+        ...88888cb8888888f8
+        .888ccccc8888888f88
+        88fcbbbb888888ff88.
+        8fbbbbb888888f888..
+        88cccb888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999f1cc11.
+        ...99ff999991c11c9.
+        ....999fff911c1df99
+        ...666f99fc111c66f6
+        ..66ff9991c11df66f6
+        ..6f6666dddcd6668f6
+        ..66fffddddc66888f6
+        ...6666ccdd668888f6
+        ......66cb8888888f6
+        ...88888c88888888f8
+        .888ccccf8888888f88
+        88ccbbb8888888ff88.
+        8cbbbb8888888f888..
+        88ccc8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199999c1cc11.
+        ...99ff999911c11f9.
+        ....999fff111c16f99
+        ...666f99cc111f66f6
+        ..66ff9911c116f66f6
+        ..6f666ddddc66668f6
+        ..66ffcddddf66888f6
+        ...6666ccd6668888f6
+        ......66c88888888f6
+        ...88888f88888888f8
+        .888cccff8888888f88
+        88ccbb88888888ff88.
+        8cbbb88888888f888..
+        88ccf8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111f11111..
+        ...1f1199991c1cc11.
+        ...99ff999111c19f9.
+        ....999ffc111c96f99
+        ...666f91cc119f66f6
+        ..66ff9111c196f66f6
+        ..6f66dddddf66668f6
+        ..66fccddd6f66888f6
+        ...6666cc66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888ccfff8888888f88
+        88ccb888888888ff88.
+        8cbb888888888f888..
+        88cff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111c11111..
+        ...1f1199911c1cf11.
+        ...99ff991111c99f9.
+        ....999fcc111f96f99
+        ...666f11cc199f66f6
+        ..66ff1111c996f66f6
+        ..6f6ddddd6f66668f6
+        ..66cccdd66f66888f6
+        ...6666cf66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888cffff8888888f88
+        88cc8888888888ff88.
+        8cb8888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11ff1111c11111..
+        ...1f1199111c1ff11.
+        ...99ff911111f99f9.
+        ....999ccc119f96f99
+        ...666c11cc999f66f6
+        ..66fc1111f996f66f6
+        ..6fddddd66f66668f6
+        ..66cccd666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88cf8888888888ff88.
+        8c88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111fffc11......
+        ...11ff1111c11111..
+        ...1f1191111c1ff11.
+        ...99ff111119f99f9.
+        ....999ccc199f96f99
+        ...666c11cf999f66f6
+        ..66cc1119f996f66f6
+        ..6cdddd666f66668f6
+        ..66ccc6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111fccc11......
+        ...11ff1111c11111..
+        ...1f1111119f1ff11.
+        ...99cc111999f99f9.
+        ....999ccf999f96f99
+        ...666c19ff999f66f6
+        ..66cc1999f996f66f6
+        ..6cdd66666f66668f6
+        ..66cff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111cccc11......
+        ...11fc1111f11111..
+        ...1f1111199f1ff11.
+        ...99cc119999f99f9.
+        ....999cff999f96f99
+        ...666c99ff999f66f6
+        ..66cc9999f996f66f6
+        ..6cd666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111cccc11......
+        ...11cc1111f11111..
+        ...1c1111999f1ff11.
+        ...99cc199999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66cf9999f996f66f6
+        ..6c6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111cccf11......
+        ...11cc1111f11111..
+        ...1c1119999f1ff11.
+        ...99cc999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ccff11......
+        ...11cc1111f11111..
+        ...1c1199999f1ff11.
+        ...99cf999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111cfff11......
+        ...11cc1111f11111..
+        ...1c1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
+        `,img`
+        ......111111.......
+        ....111ffff11......
+        ...11cf1111f11111..
+        ...1c1199999f1ff11.
+        ...99ff999999f99f9.
+        ....999fff999f96f99
+        ...666f99ff999f66f6
+        ..66ff9999f996f66f6
+        ..6f6666666f66668f6
+        ..66fff6666f66888f6
+        ...6666ff66668888f6
+        ......66f88888888f6
+        ...88888f88888888f8
+        .888fffff8888888f88
+        88ff8888888888ff88.
+        8f88888888888f888..
+        88fff8888ffff88....
+        .8888ffff88888.....
+        ....888888.........
         `],
-    600,
+    75,
     true
     )
-    pause(randint(1000, 6000))
-    microsoftText.destroy()
-    startingWindowsText.destroy()
-    windowsLogo.destroy()
+    pause(75 * 48 + randint(1300, 2400))
+    windOSLogo.destroy()
     cursorTop = sprites.create(img`
         . f f f f f f . . . 
         f 1 1 1 9 9 6 f . . 
@@ -617,6 +951,33 @@ function bootAnimation () {
     lockScreen()
 }
 sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherSprite) {
+    if (sprites.readDataBoolean(otherSprite, "enabled") == true) {
+        cursorTop.setImage(img`
+            . f f f . . . . 
+            . f 1 f . . . . 
+            . f 9 f . . . . 
+            . f 9 f . . . . 
+            . f 9 f f f f f 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            `)
+        cursorBottom.setImage(img`
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            . . . . . . . . 
+            f f 6 6 6 6 8 f 
+            f 8 6 6 6 6 8 f 
+            f 8 6 6 6 6 8 f 
+            f f 8 8 8 8 8 f 
+            . f f f f f f . 
+            `)
+        sprites.setDataNumber(cursorTop, "type", 1)
+    }
     if (otherSprite == powerButton) {
         cursorTop.say("Power", 100)
         if (powerMenuOpen == false) {
@@ -686,6 +1047,126 @@ sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Button, function (sprite, otherS
         cursorTop.say("Radio", 100)
     } else if (otherSprite == soundMixerButton) {
         cursorTop.say("Volume", 100)
+    } else if (otherSprite == su_user1Box) {
+        if (pressCooldown == 0) {
+            if (controller.A.isPressed()) {
+                currentUser = 1
+                su_user1Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f999999999999999999999999999999999999999999999999999999f6f
+                    f9f999fff999999999999999999999999999999999999999999999999f6f
+                    f9f99f168f99999999999999999999999999999999999999999999999f6f
+                    f9f99f968f99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f999f6f999999999999999999999999999999999999999999999999f8f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f9f19688f9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f999999999999999999999999999999999999999999999999999999f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                su_user2Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f666666666666666666666666666666666666666666666666666666f6f
+                    f9f666fff666666666666666666666666666666666666666666666666f6f
+                    f9f66f168f66666666666666666666666666666666666666666666666f6f
+                    f9f66f968f66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f666f6f666666666666666666666666666666666666666666666666f8f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f6f19688f6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f666666666666666666666666666666666666666666666666666666f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                usernameText.setText(user1Name)
+                pressCooldown = 1
+                pause(100)
+                pressCooldown = 0
+            }
+        }
+    } else if (otherSprite == su_user2Box) {
+        if (pressCooldown == 0) {
+            if (controller.A.isPressed()) {
+                currentUser = 2
+                su_user2Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f999999999999999999999999999999999999999999999999999999f6f
+                    f9f999fff999999999999999999999999999999999999999999999999f6f
+                    f9f99f168f99999999999999999999999999999999999999999999999f6f
+                    f9f99f968f99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f6f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f999f6f999999999999999999999999999999999999999999999999f8f
+                    f9f99fffff99999999999999999999999999999999999999999999999f8f
+                    f9f9f19688f9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
+                    f6f999999999999999999999999999999999999999999999999999999f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                su_user1Box.setImage(img`
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    f1111111111111111111199999999999999996666666666666666666666f
+                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
+                    f9f666666666666666666666666666666666666666666666666666666f6f
+                    f9f666fff666666666666666666666666666666666666666666666666f6f
+                    f9f66f168f66666666666666666666666666666666666666666666666f6f
+                    f9f66f968f66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f6f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f666f6f666666666666666666666666666666666666666666666666f8f
+                    f9f66fffff66666666666666666666666666666666666666666666666f8f
+                    f9f6f19688f6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
+                    f6f666666666666666666666666666666666666666666666666666666f8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
+                    f6666666666666666666666666668888888888888888888888888888888f
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+                    `)
+                usernameText.setText(user2Name)
+                pressCooldown = 1
+                pause(100)
+                pressCooldown = 0
+            }
+        }
+    } else if (otherSprite == logInButton) {
+        if (passwordEntered == 1 && passwordLength >= requiredPasswordLength) {
+            cursorTop.say("Continue", 100)
+            if (pressCooldown == 0) {
+                if (controller.A.isPressed()) {
+                    passwordLoadingScreen()
+                    pressCooldown = 1
+                    pause(750)
+                    pressCooldown = 0
+                }
+            }
+        }
     }
 })
 function desktop () {
@@ -873,10 +1354,11 @@ function lockScreen () {
         f9999999966666666666688888888888888888888888888f
         ffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffff
-        `, SpriteKind.Password_Textbox)
+        `, SpriteKind.Textbox)
     passwordField.setPosition(72, 86)
-    logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
+    logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Button)
     logInButton.setPosition(103, 86)
+    sprites.setDataBoolean(logInButton, "enabled", false)
     su_user1Box = sprites.create(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         f1111111111111111111199999999999999996666666666666666666666f
@@ -898,7 +1380,7 @@ function lockScreen () {
         f6666666666666666666666666668888888888888888888888888888888f
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-        `, SpriteKind.SwitchUser_Button)
+        `, SpriteKind.Button)
     su_user1Box.setPosition(30, 10)
     su_user2Box = sprites.create(img`
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -921,7 +1403,7 @@ function lockScreen () {
         f6666666666666666666666666668888888888888888888888888888888f
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
         ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-        `, SpriteKind.SwitchUser_Button)
+        `, SpriteKind.Button)
     su_user2Box.setPosition(30, 29)
     su_menuUser1 = textsprite.create(user1Name, 0, 1)
     su_menuUser1.setPosition(30, 9)
@@ -998,6 +1480,7 @@ function lockScreen () {
         `, SpriteKind.Cursor)
     cursorTop.setPosition(cursorPosX, cursorPosY)
     cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
+    sprites.setDataNumber(cursorTop, "type", 0)
     controller.moveSprite(cursorTop, 100, 100)
     controller.moveSprite(cursorBottom, 100, 100)
     cursorTop.z = 100
@@ -1008,397 +1491,21 @@ function lockScreen () {
     firstPasswordInput = 1
     pressCooldown = 0
 }
-function bootloader () {
-    if (bootSuccess == 1) {
-        scene.setBackgroundImage(img`
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffff2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            fffffffffffffff2f2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffff2f2f2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            fffffffffffff2fff2f2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffff2fffff2f2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            fffffffffff22222222222ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffff22f2fffff22f2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            fffffffff2ff2f2fff22f2f2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffff2ffff2f2f2ff2f2f2fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            fffffff2ffffff2f2ffff2f2f2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffff222222222222222222222fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-            `)
-        startupKeyText.destroy()
-        makeBootText = textsprite.create("MakeBOOT", 0, 1)
-        makeBootText.setPosition(45, 14)
-        pause(500)
-        controllerText = textsprite.create("Controller:", 0, 1)
-        controllerText.setPosition(37, 29)
-        graphicsText = textsprite.create("Graphics:", 0, 1)
-        graphicsText.setPosition(32, 66)
-        for (let index = 0; index < 1; index++) {
-            controllerStatus = textsprite.create("Loading drivers.", 0, 5)
-            controllerStatus.setPosition(100, 43)
-            pause(100)
-            controllerStatus.destroy()
-            controllerStatus = textsprite.create("Loading drivers..", 0, 5)
-            controllerStatus.setPosition(100, 43)
-            pause(100)
-            controllerStatus.destroy()
-            controllerStatus = textsprite.create("Loading drivers...", 0, 5)
-            controllerStatus.setPosition(100, 43)
-            pause(400)
-            controllerStatus.destroy()
-        }
-        controllerStatus = textsprite.create("Ready", 0, 7)
-        controllerStatus.setPosition(74, 43)
-        for (let index = 0; index < 1; index++) {
-            graphicsStatus = textsprite.create("Loading drivers.", 0, 5)
-            graphicsStatus.setPosition(94, 81)
-            pause(100)
-            graphicsStatus.destroy()
-            graphicsStatus = textsprite.create("Loading drivers..", 0, 5)
-            graphicsStatus.setPosition(94, 81)
-            pause(100)
-            graphicsStatus.destroy()
-            graphicsStatus = textsprite.create("Loading drivers...", 0, 5)
-            graphicsStatus.setPosition(94, 81)
-            pause(100)
-            graphicsStatus.destroy()
-        }
-        graphicsStatus = textsprite.create("Ready", 0, 7)
-        graphicsStatus.setPosition(74, 81)
-        pause(200)
-        windowsBootManager()
-    } else {
-    	
-    }
+function DefaultPrefrences () {
+    user1Name = "Admin"
+    user2Name = "User"
+    user1Password = "1234"
+    user2Password = "1111"
+    currentUser = 1
+    requiredPasswordLength = 4
+    passwordEntered = 0
+    powerMenuOpen = false
+    hoveringActive = false
 }
-function windowsBootManager () {
-    bootAnimation()
-}
-sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Textbox, function (sprite, otherSprite) {
-    cursorTop.say("Enter password", 100)
-    if (pressCooldown == 0) {
-        if (controller.A.isPressed()) {
-            if (firstPasswordInput == 1) {
-                passwordInput = game.askForString("Enter Password", 6)
-                cursorPosX = cursorTop.x
-                cursorPosY = cursorTop.y
-                if (passwordInput.isEmpty() || passwordInput.includes("  ")) {
-                    passwordLength = 0
-                    passwordText = textsprite.create("", 0, 0)
-                    passwordText.destroy()
-                } else {
-                    cursorTop.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(72, 85)
-                    firstPasswordInput = 0
-                }
-            } else {
-                passwordText.destroy()
-                passwordInput = game.askForString("Enter Password", 6)
-                cursorPosX = cursorTop.x
-                cursorPosY = cursorTop.y
-                if (passwordInput.isEmpty()) {
-                    passwordLength = 0
-                    textSprite = textsprite.create("", 0, 0)
-                } else {
-                    passwordText.destroy()
-                    cursorTop.z = 100
-                    passwordLength = passwordInput.length
-                    passwordText = textsprite.create(passwordInput, 0, 1)
-                    passwordText.setPosition(72, 85)
-                }
-            }
-            if (passwordLength >= requiredPasswordLength) {
-                passwordEntered = 1
-                logInButton.destroy()
-                logInButton = sprites.create(assets.image`myImage0`, SpriteKind.Password_Button)
-                logInButton.setPosition(103, 86)
-                cursorPosX = cursorTop.x
-                cursorPosY = cursorTop.y
-                cursorTop.destroy()
-                cursorBottom.destroy()
-                cursorTop = sprites.create(img`
-                    . f f f f f f . . . 
-                    f 1 1 1 9 9 6 f . . 
-                    f 1 f f f 6 6 f . . 
-                    f 1 f f 6 f f . . . 
-                    f 9 f 6 f 6 f . . . 
-                    f 9 6 f 6 . . . . . 
-                    f 6 6 f f . . . . . 
-                    . f f . . . . . . . 
-                    . . . . . . . . . . 
-                    . . . . . . . . . . 
-                    `, SpriteKind.Cursor)
-                cursorTop.setPosition(cursorPosX, cursorPosY)
-                cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
-                cursorBottom.setPosition(cursorTop.x, cursorTop.y)
-                cursorTop.setStayInScreen(true)
-                cursorBottom.setStayInScreen(true)
-                cursorTop.z = 100
-                cursorBottom.z = 100
-                controller.moveSprite(cursorTop, 100, 100)
-                controller.moveSprite(cursorBottom, 100, 100)
-                cursorTop.say("Enter password", 100)
-            } else {
-                logInButton.destroy()
-                logInButton = sprites.create(assets.image`myImage2`, SpriteKind.Password_Button)
-                logInButton.setPosition(103, 86)
-                cursorPosX = cursorTop.x
-                cursorPosY = cursorTop.y
-                cursorTop.destroy()
-                cursorBottom.destroy()
-                cursorTop = sprites.create(img`
-                    . f f f f f f . . . 
-                    f 1 1 1 9 9 6 f . . 
-                    f 1 f f f 6 6 f . . 
-                    f 1 f f 6 f f . . . 
-                    f 9 f 6 f 6 f . . . 
-                    f 9 6 f 6 . . . . . 
-                    f 6 6 f f . . . . . 
-                    . f f . . . . . . . 
-                    . . . . . . . . . . 
-                    . . . . . . . . . . 
-                    `, SpriteKind.Cursor)
-                cursorTop.setPosition(cursorPosX, cursorPosY)
-                cursorBottom = sprites.create(assets.image`myImage`, SpriteKind.Cursor_bottom)
-                cursorBottom.setPosition(cursorTop.x, cursorTop.y)
-                cursorTop.setStayInScreen(true)
-                cursorBottom.setStayInScreen(true)
-                controller.moveSprite(cursorTop, 100, 100)
-                controller.moveSprite(cursorBottom, 100, 100)
-                cursorTop.z = 100
-                cursorBottom.z = 100
-                cursorTop.say("Enter password", 100)
-            }
-            pressCooldown = 1
-            pause(750)
-            pressCooldown = 0
-        }
-    }
-})
-sprites.onOverlap(SpriteKind.Cursor, SpriteKind.SwitchUser_Button, function (sprite, otherSprite) {
-    if (otherSprite == su_user1Box) {
-        if (pressCooldown == 0) {
-            if (controller.A.isPressed()) {
-                currentUser = 1
-                su_user1Box.setImage(img`
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    f1111111111111111111199999999999999996666666666666666666666f
-                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                    f9f999999999999999999999999999999999999999999999999999999f6f
-                    f9f999fff999999999999999999999999999999999999999999999999f6f
-                    f9f99f168f99999999999999999999999999999999999999999999999f6f
-                    f9f99f968f99999999999999999999999999999999999999999999999f6f
-                    f9f99fffff99999999999999999999999999999999999999999999999f6f
-                    f9f99fffff99999999999999999999999999999999999999999999999f8f
-                    f9f999f6f999999999999999999999999999999999999999999999999f8f
-                    f9f99fffff99999999999999999999999999999999999999999999999f8f
-                    f9f9f19688f9999999999999999999999999999999999999999999999f8f
-                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                    f6f999999999999999999999999999999999999999999999999999999f8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6666666666666666666666666668888888888888888888888888888888f
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    `)
-                su_user2Box.setImage(img`
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    f1111111111111111111199999999999999996666666666666666666666f
-                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                    f9f666666666666666666666666666666666666666666666666666666f6f
-                    f9f666fff666666666666666666666666666666666666666666666666f6f
-                    f9f66f168f66666666666666666666666666666666666666666666666f6f
-                    f9f66f968f66666666666666666666666666666666666666666666666f6f
-                    f9f66fffff66666666666666666666666666666666666666666666666f6f
-                    f9f66fffff66666666666666666666666666666666666666666666666f8f
-                    f9f666f6f666666666666666666666666666666666666666666666666f8f
-                    f9f66fffff66666666666666666666666666666666666666666666666f8f
-                    f9f6f19688f6666666666666666666666666666666666666666666666f8f
-                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                    f6f666666666666666666666666666666666666666666666666666666f8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6666666666666666666666666668888888888888888888888888888888f
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    `)
-                usernameText.setText(user1Name)
-                pressCooldown = 1
-                pause(100)
-                pressCooldown = 0
-            }
-        }
-    } else if (otherSprite == su_user2Box) {
-        if (pressCooldown == 0) {
-            if (controller.A.isPressed()) {
-                currentUser = 2
-                su_user2Box.setImage(img`
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    f1111111111111111111199999999999999996666666666666666666666f
-                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                    f9f999999999999999999999999999999999999999999999999999999f6f
-                    f9f999fff999999999999999999999999999999999999999999999999f6f
-                    f9f99f168f99999999999999999999999999999999999999999999999f6f
-                    f9f99f968f99999999999999999999999999999999999999999999999f6f
-                    f9f99fffff99999999999999999999999999999999999999999999999f6f
-                    f9f99fffff99999999999999999999999999999999999999999999999f8f
-                    f9f999f6f999999999999999999999999999999999999999999999999f8f
-                    f9f99fffff99999999999999999999999999999999999999999999999f8f
-                    f9f9f19688f9999999999999999999999999999999999999999999999f8f
-                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                    f6f9fffffff9999999999999999999999999999999999999999999999f8f
-                    f6f999999999999999999999999999999999999999999999999999999f8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6666666666666666666666666668888888888888888888888888888888f
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    `)
-                su_user1Box.setImage(img`
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    f1111111111111111111199999999999999996666666666666666666666f
-                    f1ffffffffffffffffffffffffffffffffffffffffffffffffffffffff6f
-                    f9f666666666666666666666666666666666666666666666666666666f6f
-                    f9f666fff666666666666666666666666666666666666666666666666f6f
-                    f9f66f168f66666666666666666666666666666666666666666666666f6f
-                    f9f66f968f66666666666666666666666666666666666666666666666f6f
-                    f9f66fffff66666666666666666666666666666666666666666666666f6f
-                    f9f66fffff66666666666666666666666666666666666666666666666f8f
-                    f9f666f6f666666666666666666666666666666666666666666666666f8f
-                    f9f66fffff66666666666666666666666666666666666666666666666f8f
-                    f9f6f19688f6666666666666666666666666666666666666666666666f8f
-                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                    f6f6fffffff6666666666666666666666666666666666666666666666f8f
-                    f6f666666666666666666666666666666666666666666666666666666f8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6ffffffffffffffffffffffffffffffffffffffffffffffffffffffff8f
-                    f6666666666666666666666666668888888888888888888888888888888f
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-                    `)
-                usernameText.setText(user2Name)
-                pressCooldown = 1
-                pause(100)
-                pressCooldown = 0
-            }
-        }
-    }
-})
 controller.menu.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (allowBoot == 1) {
+    if (power2 == 0) {
         power2 = 1
-        windowsBootManager()
+        bootAnimation()
     }
 })
 function passwordLoadingScreen () {
@@ -1432,7 +1539,7 @@ function passwordLoadingScreen () {
         . . . . 8 8 6 6 6 6 8 8 . . . . 
         . . . . . . 8 8 8 8 . . . . . . 
         . . . . . . . . . . . . . . . . 
-        `, SpriteKind.Loading_Animation)
+        `, SpriteKind.Icon)
     loadingCircle.setPosition(50, 60)
     animation.runImageAnimation(
     loadingCircle,
@@ -2044,93 +2151,48 @@ function passwordLoadingScreen () {
         }
     }
 }
-sprites.onOverlap(SpriteKind.Cursor, SpriteKind.Password_Button, function (sprite, otherSprite) {
-    if (passwordEntered == 1 && passwordLength >= requiredPasswordLength) {
-        cursorTop.say("Continue", 100)
-        if (pressCooldown == 0) {
-            if (controller.A.isPressed()) {
-                passwordLoadingScreen()
-                pressCooldown = 1
-                pause(750)
-                pressCooldown = 0
-            }
-        }
-    }
-})
 let loadingCircle: Sprite = null
 let welcomeText: TextSprite = null
-let allowBoot = 0
-let textSprite: TextSprite = null
-let passwordText: Sprite = null
-let passwordLength = 0
-let passwordInput = ""
-let graphicsStatus: TextSprite = null
-let controllerStatus: TextSprite = null
-let graphicsText: TextSprite = null
-let controllerText: TextSprite = null
-let makeBootText: TextSprite = null
-let firstPasswordInput = 0
-let cursorBottom: Sprite = null
+let hoveringActive = false
+let user2Password = ""
+let user1Password = ""
 let su_menuUser2: TextSprite = null
 let su_menuUser1: Sprite = null
+let userIcon: Sprite = null
+let user2Name = ""
+let user1Name = ""
+let usernameText: TextSprite = null
+let currentUser = 0
+let powerMenu: Sprite = null
+let powerMenuOpen = false
 let su_user2Box: Sprite = null
 let su_user1Box: Sprite = null
-let logInButton: Sprite = null
-let passwordField: Sprite = null
-let usernameText: TextSprite = null
-let userIcon: Sprite = null
-let powerMenu: Sprite = null
-let pressCooldown = 0
 let soundMixerButton: Sprite = null
 let networkButton: Sprite = null
 let powerButton: Sprite = null
-let cursorPosY = 0
-let cursorPosX = 0
-let cursorTop: Sprite = null
-let animationInterval = 0
-let windowsLogo: Sprite = null
-let startingWindowsText: TextSprite = null
-let microsoftText: TextSprite = null
-let bootSuccess = 0
-let gDriversBootTime = 0
-let cDriversBootTime = 0
-let powerMenuOpen = false
+let windOSLogo: Sprite = null
+let logInButton: Sprite = null
 let passwordEntered = 0
 let requiredPasswordLength = 0
-let currentUser = 0
-let user2Password = ""
-let user1Password = ""
-let user2Name = ""
-let user1Name = ""
+let textSprite: TextSprite = null
+let passwordText: Sprite = null
+let passwordLength = 0
+let cursorPosY = 0
+let cursorPosX = 0
+let passwordInput = ""
+let firstPasswordInput = 0
+let pressCooldown = 0
+let passwordField: Sprite = null
+let cursorBottom: Sprite = null
+let cursorTop: Sprite = null
 let startupKeyText: Sprite = null
 let power2 = 0
 power2 = 0
 scene.setBackgroundImage(assets.image`bg_0`)
 startupKeyText = textsprite.create("Press     to startup")
 startupKeyText.setPosition(69, 11)
-user1Name = "Admin"
-user2Name = "User"
-user1Password = "1234"
-user2Password = "1111"
-currentUser = 1
-requiredPasswordLength = 4
-passwordEntered = 0
-powerMenuOpen = false
-let cDrivers = 1
-let gDrivers = 1
-if ((cDrivers && gDrivers) == 0) {
-    cDriversBootTime = randint(4, 6)
-    gDriversBootTime = randint(4, 6)
-    bootSuccess = 0
-} else {
-    cDriversBootTime = randint(2, 4)
-    gDriversBootTime = randint(2, 4)
-    bootSuccess = 1
-}
-forever(function () {
-    if (power2 == 0) {
-        allowBoot = 1
-    } else {
-        allowBoot = 0
+game.onUpdateInterval(50, function () {
+    if (hoveringActive == false) {
+    	
     }
 })
