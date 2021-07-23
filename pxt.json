@@ -1,17 +1,19 @@
 {
-    "name": "WindOS Build 2312",
+    "name": "Windows 7 v1.0",
     "description": "",
     "dependencies": {
         "device": "*",
         "animation": "*",
         "controller": "*",
+        "radio": "*",
         "radio-broadcast": "*",
+        "settings-blocks": "github:microsoft/pxt-settings-blocks#v1.0.0",
         "pxt-button-combos": "github:jwunderl/pxt-button-combos#v0.0.24",
         "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.1.0",
         "Color Fading": "github:jwunderl/pxt-color#v0.2.0",
         "pxt-status-bar": "github:jwunderl/pxt-status-bar#v0.4.0",
         "arcade-text": "github:microsoft/arcade-text#v1.3.0",
-        "arcade-sprite-util": "github:jwunderl/arcade-sprite-util#v0.2.2"
+        "arcade-shader": "github:riknoll/arcade-shader#master"
     },
     "files": [
         "main.blocks",
@@ -20,18 +22,17 @@
         "tilemap.g.jres",
         "tilemap.g.ts",
         "images.g.jres",
-        "images.g.ts",
-        null
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.4.45",
+        "target": "1.4.35",
         "targetId": "arcade"
     },
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "blocksprj"
 }
